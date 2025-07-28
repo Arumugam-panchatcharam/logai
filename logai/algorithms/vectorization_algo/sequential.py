@@ -6,7 +6,7 @@
 #
 #
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 import pickle as pkl
 import os
 

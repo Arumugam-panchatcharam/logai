@@ -7,7 +7,7 @@
 #
 import numpy as np
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 
 from logai.config_interfaces import Config
 from logai.dataloader.data_model import LogRecordObject

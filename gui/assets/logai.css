@@ -36,9 +36,10 @@ hr {
 }
 
 .banner {
-    height: 5.5rem;
+    height: 10rem;
     padding: 0rem 2rem 0rem;
-    background-color: white;
+    color: white;
+    background-color: black;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -46,7 +47,7 @@ hr {
 
 .banner Img {
     position: relative;
-    height: 4.5rem;
+    height: 15rem;
     width: auto;
     margin-left: 2%;
 }

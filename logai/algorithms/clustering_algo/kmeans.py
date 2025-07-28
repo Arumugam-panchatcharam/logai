@@ -6,7 +6,7 @@
 #
 #
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 from sklearn.cluster import KMeans
 
 from logai.algorithms.algo_interfaces import ClusteringAlgo

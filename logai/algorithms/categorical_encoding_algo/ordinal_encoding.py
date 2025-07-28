@@ -7,7 +7,7 @@
 #
 import numpy as np
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 from sklearn.preprocessing import OrdinalEncoder
 
 from logai.algorithms.algo_interfaces import CategoricalEncodingAlgo

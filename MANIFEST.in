@@ -1,6 +1,1 @@
-recursive-include logai *.yaml *.json
-
-recursive-exclude logai/results *
-recursive-exclude logai/data/ *
-
-include requirements.txt
+include README.md LICENSE

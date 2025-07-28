@@ -9,7 +9,7 @@ import logging
 import re
 
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass, field
 
 from logai.config_interfaces import Config
 from logai.dataloader.data_model import LogRecordObject
@@ -24,8 +24,8 @@ class DataLoaderConfig(Config):
 
     filepath: str = ""
     log_type: str = "csv"
-    dimensions: dict = dict()
-    reader_args: dict = dict()
+    dimensions: dict = field(default_factory=dict)
+    reader_args: dict = field(default_factory=dict)
     infer_datetime: bool = False
     datetime_format: str = "%Y-%M-%dT%H:%M:%SZ"  # Default the ISO 8601 format example 2022-05-26T21:29:09+00:00
     open_dataset: str = None

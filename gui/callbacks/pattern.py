@@ -262,7 +262,9 @@ def update_summary_graph(data):
     prevent_initial_call=True,
 )
 def update_y_timeseries(data, interval):
-    print(data)
+    #print(data)
+    if not data:
+        return
     interval_map = {0: "1s", 1: "1min", 2: "1h", 3: "1d"}
     pattern = data["points"][0]["customdata"]
     freq = interval_map[interval]

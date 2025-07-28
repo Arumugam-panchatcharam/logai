@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import torch
 from typing import Tuple, Dict
-from attr import dataclass
+from dataclasses import dataclass
 from datasets import Dataset, load_metric
 from sklearn.model_selection import train_test_split
 from torch.optim import AdamW

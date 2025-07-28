@@ -10,7 +10,7 @@ import os
 import numpy as np
 import pickle as pkl
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 
 from logai.algorithms.algo_interfaces import VectorizationAlgo
 from .semantic import Semantic, SemanticVectorizerParams

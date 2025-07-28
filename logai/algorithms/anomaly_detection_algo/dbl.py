@@ -8,7 +8,7 @@
 from datetime import datetime
 
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass, field
 from typing import Tuple, List
 
 from merlion.models.anomaly.dbl import DynamicBaseline, DynamicBaselineConfig
@@ -40,7 +40,7 @@ class DBLDetectorParams(Config):
     train_window: str = None
     wind_sz: str = "1h"
     trends: List[str] = None
-    kwargs: dict = {}
+    kwargs: dict = field(default_factory=dict)
 
 
 @factory.register("detection", "dbl", DBLDetectorParams)

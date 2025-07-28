@@ -7,7 +7,7 @@
 #
 
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 
 from logai.algorithms.categorical_encoding_algo.label_encoding import LabelEncoding
 from logai.algorithms.categorical_encoding_algo.one_hot_encoding import (

@@ -13,7 +13,7 @@ import pickle as pkl
 import os
 import gensim.downloader
 import logging
-from attr import dataclass
+from dataclasses import dataclass
 from nltk.tokenize import word_tokenize
 
 from logai.algorithms.algo_interfaces import VectorizationAlgo

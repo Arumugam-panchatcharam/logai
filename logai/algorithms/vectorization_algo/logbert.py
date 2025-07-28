@@ -7,7 +7,7 @@
 #
 import os
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 from tokenizers import (
     decoders,
     models,

@@ -34,15 +34,15 @@ class LogRecordObject:
     :param _index: The indices of the log data.
     """
 
-    timestamp: pd.DataFrame = pd.DataFrame()
-    attributes: pd.DataFrame = pd.DataFrame()
-    resource: pd.DataFrame = pd.DataFrame()
-    trace_id: pd.DataFrame = pd.DataFrame()
-    span_id: pd.DataFrame = pd.DataFrame()
-    severity_text: pd.DataFrame = pd.DataFrame()
-    severity_number: pd.DataFrame = pd.DataFrame()
-    body: pd.DataFrame = pd.DataFrame()
-    labels: pd.DataFrame = pd.DataFrame()
+    timestamp: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    attributes: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    resource: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    trace_id: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    span_id: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    severity_text: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    severity_number: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    body: pd.DataFrame =   field(default_factory=lambda: pd.DataFrame())
+    labels: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
     _index: np.array = field(init=False)
 
     def __post_init__(self):

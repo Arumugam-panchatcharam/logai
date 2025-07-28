@@ -14,7 +14,7 @@ from logai.algorithms.nn_model.forecast_nn.base_nn import (
     ForecastBasedNN,
     ForecastBasedNNParams,
 )
-from attr import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -24,7 +24,7 @@ class CNNParams(ForecastBasedNNParams):
     :param kernel_sizes: the kernel size (default value: list = [2, 3, 4]).
     """
 
-    kernel_sizes: list = [2, 3, 4]
+    kernel_sizes: list = field(default_factory=[2, 3, 4]) #[2, 3, 4]
 
 
 class CNN(ForecastBasedNN):

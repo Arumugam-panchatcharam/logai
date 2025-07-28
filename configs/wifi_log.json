@@ -1,0 +1,21 @@
+{
+  "data_loader_config": {
+    "infer_datetime": false,
+    "datetime_format": "%Y-%m-%dT%H:%M:%S",
+    "reader_args": {
+      "log_format": "<DateTime> <project> <Level> <pid> <Content>"
+    },
+    "dimensions": {
+      "timestamp": ["DateTime"],
+      "body": ["Content"],
+      "attributes": ["Level"]
+    }
+  },
+  "preprocessor_config": {
+    "custom_replace_list": {
+      "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
+      "WIFI\\.([\\w]+)": "<Level>",
+      "tid=\\d+\\]\\s*(.*)$": "<Content>"
+    }
+  }
+}

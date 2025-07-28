@@ -55,4 +55,6 @@ def display_page(pathname):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    #import nltk
+    #nltk.download('punkt_tab')
+    app.run(debug=True)

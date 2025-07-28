@@ -6,7 +6,7 @@
 #
 #
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 from logai.algorithms.algo_interfaces import AnomalyDetectionAlgo
@@ -49,7 +49,7 @@ class ETSDetectorParams(Config):
     seasonal: str = "add"
     seasonal_periods: str = None
     refit: bool = True
-    kwargs: dict = {}
+    kwargs: dict = field(default_factory=dict)
 
 
 @factory.register("detection", "ets", ETSDetectorParams)

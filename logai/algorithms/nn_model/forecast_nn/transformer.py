@@ -10,7 +10,7 @@ from logai.algorithms.nn_model.forecast_nn.base_nn import (
     ForecastBasedNN,
     ForecastBasedNNParams,
 )
-from attr import dataclass
+from dataclasses import dataclass
 from logai.algorithms.vectorization_algo.forecast_nn import ForecastNNVectorizedDataset
 
 

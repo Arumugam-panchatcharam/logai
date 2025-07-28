@@ -8,7 +8,7 @@
 import json
 import os.path
 
-from attr import dataclass
+from dataclasses import dataclass
 
 from logai.config_interfaces import Config
 from logai.dataloader.data_loader import FileDataLoader, DataLoaderConfig

@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_sc
 from .utils import set_device, tensor2flatten_arr
 from logai.config_interfaces import Config
 from logai.utils.file_utils import read_file
-from attr import dataclass
+from dataclasses import dataclass
 from logai.algorithms.vectorization_algo.forecast_nn import ForecastNNVectorizedDataset
 from torch.utils.data import DataLoader
 

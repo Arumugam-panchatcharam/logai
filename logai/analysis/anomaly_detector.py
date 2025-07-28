@@ -6,9 +6,9 @@
 #
 #
 import pandas as pd
-import logai.algorithms.anomaly_detection_algo
+#import logai.algorithms.anomaly_detection_algo
 
-from attr import dataclass
+from dataclasses import dataclass
 from logai.config_interfaces import Config
 from logai.algorithms.factory import factory
 

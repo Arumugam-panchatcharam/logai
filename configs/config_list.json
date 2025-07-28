@@ -1,0 +1,79 @@
+{
+    "supported_files": [
+        {
+            "name": "ArmConsole",
+            "supported_config": "console_log.json",
+            "supported_files": ["ArmConsolelog"]
+        },
+        {
+            "name": "BootTime",
+            "supported_config": "boottime.json",
+            "supported_files": ["BootTime"]
+        },
+        {
+            "name": "LMLite",
+            "supported_config": "lmlite.json",
+            "supported_files": ["LM"]
+        },
+        {
+            "name": "PandM_Log",
+            "supported_config": "pandm_log.json",
+            "supported_files": ["PAMlog"]
+        },
+        {
+            "name": "PSM_log",
+            "supported_config": "psm_log.json",
+            "supported_files": ["PSMlog"]
+        },
+        {
+            "name": "WiFi_Log",
+            "supported_config": "wifi_log.json",
+            "supported_files": ["WiFiLog"]
+        },
+        {
+            "name": "WiFi_vendor_app_log",
+            "supported_config": "wifi_vendor_app_log.json",
+            "supported_files": ["wifi_vendor_apps"]
+        },
+        {
+            "name": "WiFi_vendor_hal_log",
+            "supported_config": "wifi_vendor_hal_log.json",
+            "supported_files": ["wifi_vendor_hal"]
+        },
+        {
+            "name": "WiFi_vendor_driver_log",
+            "supported_config": "wifi_vendor_driver_log.json",
+            "supported_files": ["wifi_vendor_driver"]
+        },
+        {
+            "name": "WiFi_vendor_hostapd_log",
+            "supported_config": "wifi_vendor_hostapd_log.json",
+            "supported_files": ["wifi_vendor_hostapd"]
+        },
+        {
+            "name": "Telemetry",
+            "supported_config": "telemetry.json",
+            "supported_files": ["telemetry"]
+        },
+        {
+            "name": "StateInfoManager",
+            "supported_config": "state_info_manager.json",
+            "supported_files": ["STATEINFOMANAGERLog"]
+        },
+        {
+            "name": "PARODUS",
+            "supported_config": "parodus.json",
+            "supported_files": ["PARODUSlog"]
+        },
+        {
+            "name": "Syslog_NG",
+            "supported_config": "syslog_ng.json",
+            "supported_files": ["syslog"]
+        },
+        {
+            "name": "Messages",
+            "supported_config": "console_log.json",
+            "supported_files": ["messages"]
+        }
+    ]
+}

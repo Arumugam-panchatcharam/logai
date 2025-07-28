@@ -14,7 +14,7 @@ import pandas as pd
 from logai.utils import constants
 from logai.config_interfaces import Config
 
-from attr import dataclass
+from dataclasses import dataclass
 
 
 @dataclass

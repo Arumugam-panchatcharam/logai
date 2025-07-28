@@ -7,7 +7,7 @@
 #
 import numpy as np
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass, field
 
 from logai.algorithms.algo_interfaces import AnomalyDetectionAlgo
 from logai.config_interfaces import Config
@@ -40,7 +40,7 @@ class DistributionDivergenceParams(Config):
         ("JS"). It also allows a comma separated list of metrics like ("KL,JS" or "JS,KL").
     """
     n_bins: int = 100
-    type: list = ["KL"]  # "KL", "JS", "KL,JS"
+    type: list = field(default_factory="[KL]") #["KL"]  # "KL", "JS", "KL,JS"
 
 
 @factory.register("detection", "distribution_divergence", DistributionDivergenceParams)

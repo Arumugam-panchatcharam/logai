@@ -44,7 +44,7 @@ def _clustering_config():
 
 
 def create_attribute_component(attributes):
-    print(attributes)
+    #print(attributes)
     table = dash_table.DataTable(
         id="cluster-attribute-table",
         data=attributes.iloc[:1].to_dict("records"),
@@ -177,7 +177,7 @@ def generate_pie_chart(df):
     Output("clustering-loglines", "children"), [Input("cluster-hist", "clickData")]
 )
 def update_logline_list(data):
-    if len(data) > 0:
+    if data and len(data) > 0:
         cluster_label = data["points"][0]["label"]
         # return html.Div(str(data['points'][0])) # for debug
         df = log_clustering.get_loglines(cluster_label)

@@ -47,8 +47,8 @@ def create_banner(app):
         id="banner",
         className="banner",
         children=[
-            html.Img(src=app.get_asset_url("logai_logo.jpg")),
-            html.Plaintext("  Powered by Salesforce AI Research"),
+            html.Img(src=app.get_asset_url("logai_logo.png"), style={'width': '50%', 'height': 'auto'}),
+            html.Plaintext("  AI-Powered Fault Detection, Prediction and Auto-Healing for Home connectivity"),
         ],
     )
 

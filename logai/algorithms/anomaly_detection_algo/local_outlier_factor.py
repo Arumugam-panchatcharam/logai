@@ -6,7 +6,7 @@
 #
 #
 import pandas as pd
-from attr import dataclass
+from dataclasses import dataclass
 from sklearn.neighbors import LocalOutlierFactor
 import numpy as np
 
