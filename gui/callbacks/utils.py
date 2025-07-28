@@ -10,23 +10,33 @@ import dash_bootstrap_components as dbc
 from dash import html, Input, Output, State, callback, dash_table
 from gui.file_manager import FileManager
 
-
-file_manager = FileManager()
-
-
 @callback(
-    Output("upload-status", "children"),
-    [Input("upload-data", "filename"), Input("upload-data", "contents")],
+    Output("file-select", "options"),
+    Output("file-select", "value"),
+    [
+        Input("upload-data", "filename"), 
+        Input("upload-data", "contents")
+     ],
 )
 def upload_file(uploaded_filenames, uploaded_file_contents):
+    options = []
+    file_manager = FileManager()
     if uploaded_filenames is not None and uploaded_file_contents is not None:
         for name, data in zip(uploaded_filenames, uploaded_file_contents):
             file_manager.save_file(name, data)
-        return html.Div("Upload Success!")
+    
+        file_manager.process_uploaded_files()
+        files = file_manager.list_merged_files()
+
+        for filename in files:
+            options.append({"label": filename, "value": filename})
+
+    if len(options) > 0:
+        return options, options[0]["label"]
     else:
-        return html.Div("File Already Exists!")
+        return options, ""
 
-
+"""
 @callback(
     Output("file-select", "options"),
     Output("file-select", "value"),
@@ -67,3 +77,4 @@ def custom_file_setting(dataset_name):
         )
     else:
         return html.Div()
+"""

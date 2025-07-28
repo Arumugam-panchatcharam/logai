@@ -23,11 +23,11 @@ class DataLoaderConfig(Config):
     """
 
     filepath: str = ""
-    log_type: str = "csv"
+    log_type: str = "txt"
     dimensions: dict = field(default_factory=dict)
     reader_args: dict = field(default_factory=dict)
     infer_datetime: bool = False
-    datetime_format: str = "%Y-%M-%dT%H:%M:%SZ"  # Default the ISO 8601 format example 2022-05-26T21:29:09+00:00
+    datetime_format: str = "%Y-%m-%dT%H:%M:%S"  # Default the ISO 8601 format example 2022-05-26T21:29:09+00:00
     open_dataset: str = None
 
 
@@ -150,6 +150,7 @@ class FileDataLoader:
                         selected.columns = [constants.LOG_TIMESTAMPS]
                         if self.config.infer_datetime and self.config.datetime_format:
                             datetime_format = self.config.datetime_format
+                            #TODO:FIX: SettingWithCopyWarning from pandas
                             selected[constants.LOG_TIMESTAMPS] = pd.to_datetime(
                                 selected[constants.LOG_TIMESTAMPS],
                                 format=datetime_format,

@@ -47,7 +47,7 @@ def create_banner(app):
         id="banner",
         className="banner",
         children=[
-            html.Img(src=app.get_asset_url("logai_logo.png"), style={'width': '50%', 'height': 'auto'}),
+            html.Img(src=app.get_asset_url("logai_logo.png"), style={'width': '10%', 'height': 'auto'}),
             html.Plaintext("  AI-Powered Fault Detection, Prediction and Auto-Healing for Home connectivity"),
         ],
     )
@@ -57,7 +57,7 @@ def create_description_card():
     return html.Div(
         id="description-card",
         children=[
-            html.H4("AI-based Log Analysis"),
+            html.H3("AI-based Log Analysis"),
             html.Div([create_menu()]),
             html.Div(id="intro", children="  "),
         ],
@@ -121,8 +121,8 @@ def create_upload_file_layout():
     return html.Div(
         id="upload-file-layout",
         children=[
-            html.Br(),
-            html.P("Upload Log File"),
+            #html.Br(),
+            html.B("Upload Log File"),
             dcc.Upload(
                 id="upload-data",
                 children=html.Div(["Drag and Drop or Select a File"]),
@@ -141,7 +141,6 @@ def create_upload_file_layout():
         ],
     )
 
-
 def create_file_setting_layout():
     return html.Div(
         id="file-setting-layout",
@@ -149,15 +148,12 @@ def create_file_setting_layout():
             html.Br(),
             html.B("File Settings"),
             html.Hr(),
-            html.Label("Log Type"),
-            dcc.Dropdown(
-                id="log-type-select",
-                options=["HDFS", "BGL", "HealthApp", "Custom"],
-                value="HDFS",
-            ),
             dbc.Row(dbc.Col([html.Div(id="custom-file-setting")])),
             html.Label("Log File"),
-            dcc.Dropdown(id="file-select", style={"width": "100%"}),
+            dcc.Dropdown(id="file-select", 
+                         options=["No File Selected!"],
+                         value="No File Selected",
+                         style={"width": "100%"}),
             html.Label("Attributes"),
             dcc.Dropdown(id="attribute-name-options", multi=True),
             html.Label("Time Interval"),

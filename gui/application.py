@@ -14,16 +14,19 @@ from gui.pages import pattern as pattern_page
 from gui.pages import anomaly_detection as anomaly_page
 from gui.pages import clustering as clustering_page
 from gui.callbacks import pattern, anomaly_detection, clustering, utils
-
+from flask import Flask
+flask_server = Flask(__name__)
 
 app = dash.Dash(
     __name__,
+    suppress_callback_exceptions=True,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
     title="LogAI",
+    server=flask_server
 )
-server = app.server
-app.config["suppress_callback_exceptions"] = True
+#server = app.server
+#app.config["suppress_callback_exceptions"] = True
 
 app.layout = dbc.Container(
     [

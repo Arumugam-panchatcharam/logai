@@ -22,18 +22,15 @@ from logai.applications.application_interfaces import (
 from gui.file_manager import FileManager
 from gui.demo.log_pattern import LogPattern
 from logai.dataloader.openset_data_loader import (
-    OpenSetDataLoaderConfig,
-    OpenSetDataLoader,
+    FileDataLoader,
 )
 from ..pages.utils import create_param_table
 
 log_pattern_demo = LogPattern()
-file_manager = FileManager()
-
 
 def _config_sample():
     config = WorkFlowConfig(
-        open_set_data_loader_config=OpenSetDataLoaderConfig(),
+        data_loader_config=FileDataLoader(),
         feature_extractor_config=FeatureExtractorConfig(),
         preprocessor_config=PreprocessorConfig(
             custom_delimiters_regex=[":", ",", "=", "\t"]
@@ -63,7 +60,7 @@ def create_attribute_component(attributes):
     )
     return html.Div(children=[table, html.Div(id="table-dropdown-container")])
 
-
+"""
 @callback(
     Output("attribute-name-options", "options"),
     Output("attribute-name-options", "value"),
@@ -89,7 +86,7 @@ def get_attributes(log_type):
     options = [{"label": str(c), "value": str(c)} for c in attributes]
     values = [str(c) for c in attributes]
     return options, values
-
+"""
 
 @callback(
     Output("attribute-options", "children"),
@@ -100,23 +97,30 @@ def get_attributes(log_type):
         Input("pattern_exception_modal_close", "n_clicks"),
     ],
     [
-        State("log-type-select", "value"),
+        #State("log-type-select", "value"),
         State("attribute-name-options", "value"),
         State("file-select", "value"),
-        State("parsing-algo-select", "value"),
-        State("parsing-param-table", "children"),
+        #State("parsing-algo-select", "value"),
+        #State("parsing-param-table", "children"),
     ],
 )
 def click_run(
-    btn_click, modal_close, log_type, attributes, filename, parsing_algo, param_table
+    btn_click, modal_close, attributes, filename
 ):
     ctx = dash.callback_context
     try:
         if ctx.triggered:
             prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
             if prop_id == "pattern-btn":
-                # TODO: Build WorkFlowConfig
-                file_path = os.path.join(file_manager.base_directory, filename)
+                file_manager = FileManager()
+                config_json = file_manager.load_config(filename)
+                #print(config_json, flush=True)
+                if config_json is not None:
+                    config = WorkFlowConfig.from_dict(config_json)
+                    #print(config, flush=True)
+
+                file_path = os.path.join(file_manager.merged_logs_path, filename)
+                """
                 params = log_pattern_demo.parse_parameters(
                     param_info=log_pattern_demo.get_parameter_info(parsing_algo),
                     params={
@@ -125,23 +129,18 @@ def click_run(
                         if p["Parameter"]
                     },
                 )
-
-                config = _config_sample()
-                config.open_set_data_loader_config.filepath = (
-                    file_path  # overwrite the file path.
-                )
-                config.open_set_data_loader_config.dataset_name = log_type
-                config.log_parser_config.parsing_algorithm = parsing_algo
-
-                config_class = log_pattern_demo.get_config_class(parsing_algo)
-                config.log_parser_config.parsing_algo_params = config_class.from_dict(
-                    params
-                )
-
+                """
+                config.data_loader_config.filepath = file_path
                 log_pattern_demo.execute_auto_parsing(config)
+                #config_class = log_pattern_demo.get_config_class(parsing_algo)
+                #config.log_parser_config.parsing_algo_params = config_class.from_dict(
+                #    params
+                #)
+
+                #log_pattern_demo.execute_auto_parsing(config)
                 return (
                     create_attribute_component(
-                        log_pattern_demo.get_attributes()[attributes]
+                        log_pattern_demo.get_attributes()
                     ),
                     False,
                     "",
@@ -272,7 +271,7 @@ def update_y_timeseries(data, interval):
     dff = result_df[result_df["parsed_logline"] == pattern][
         ["timestamp", "parsed_logline"]
     ]
-
+    #print(dff)
     ts_df = (
         dff[["timestamp", "parsed_logline"]]
         .groupby(pd.Grouper(key="timestamp", freq=freq, offset=0, label="right"))
@@ -331,6 +330,8 @@ def summary(data):
     Output("parsing-param-table", "children"), Input("parsing-algo-select", "value")
 )
 def select_parsing_algorithm(algorithm):
-    param_info = log_pattern_demo.get_parameter_info(algorithm)
+    param_info = None
+    if log_pattern_demo is not None:
+        param_info = log_pattern_demo.get_parameter_info(algorithm)
     param_table = create_param_table(param_info)
     return param_table
