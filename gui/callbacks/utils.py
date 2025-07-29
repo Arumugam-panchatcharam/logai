@@ -6,7 +6,7 @@
 #
 #
 import dash_bootstrap_components as dbc
-
+import dash
 from dash import html, Input, Output, State, callback, dash_table
 from gui.file_manager import FileManager
 
@@ -14,27 +14,41 @@ from gui.file_manager import FileManager
     Output("file-select", "options"),
     Output("file-select", "value"),
     [
+        Input('restore-dropdown-value', 'children'),
         Input("upload-data", "filename"), 
         Input("upload-data", "contents")
      ],
 )
-def upload_file(uploaded_filenames, uploaded_file_contents):
+def upload_file(_, uploaded_filenames, uploaded_file_contents):
     options = []
     file_manager = FileManager()
-    if uploaded_filenames is not None and uploaded_file_contents is not None:
-        for name, data in zip(uploaded_filenames, uploaded_file_contents):
-            file_manager.save_file(name, data)
+    ctx = dash.callback_context
     
-        file_manager.process_uploaded_files()
-        files = file_manager.list_merged_files()
+    if ctx.triggered:
+        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if prop_id == "upload-data":
+            if uploaded_filenames is not None and uploaded_file_contents is not None:
+                for name, data in zip(uploaded_filenames, uploaded_file_contents):
+                    file_manager.save_file(name, data)
+            
+                file_manager.process_uploaded_files()
+        else:
+            pass
+            #print("Prop_id", prop_id, flush=True)
+    else:
+        pass
+        #print("UPload file else case", flush=True)
 
-        for filename in files:
-            options.append({"label": filename, "value": filename})
+    files = file_manager.list_merged_files()
+
+    for filename in files:
+        options.append({"label": filename, "value": filename})
 
     if len(options) > 0:
         return options, options[0]["label"]
     else:
         return options, ""
+
 
 """
 @callback(

@@ -7,7 +7,7 @@
 #
 import dash
 import dash_bootstrap_components as dbc
-from dash import dcc, html, Input, Output, callback
+from dash import dcc, html, Input, Output, State, callback
 
 from gui.pages.utils import create_banner
 from gui.pages import pattern as pattern_page
@@ -35,6 +35,7 @@ file_manager.clean_temp_files()
 app.layout = dbc.Container(
     [
         dcc.Location(id="url", refresh=False),
+        html.Div(id='restore-dropdown-value', style={'display':'none'}),
         dbc.Container(id="page-content", fluid=True),
     ],
     fluid=True,
