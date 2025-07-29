@@ -52,6 +52,9 @@ class FileManager:
         #self.base_directory = path
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
+        
+        if not os.path.exists(self.merged_logs_path):
+            os.makedirs(self.merged_logs_path)
 
     # === Save uploaded file to local folder ===
     def save_file(self, name, content):
@@ -98,7 +101,8 @@ class FileManager:
                     tar.extractall(path=dest)
         
         self._merge_files(temp_dir, output_dir=os.path.join(self.directory, "merged_logs"))
-        self._clean_temp_files(input_dir=temp_dir)
+        # remove temporary directory
+        shutil.rmtree(temp_dir)
 
     def _merge_files(self,temp_dir, output_dir="./merged_logs"):
         os.makedirs(output_dir, exist_ok=True)
@@ -139,15 +143,15 @@ class FileManager:
                     #wr.write(message.encode("utf-8"))
                     shutil.copyfileobj(rd, wr)
 
-    def _clean_temp_files(self,input_dir):
-        for name in os.listdir(input_dir):
-            full_path = os.path.join(input_dir, name)
+    def clean_temp_files(self):
+        for name in os.listdir(self.directory):
+            full_path = os.path.join(self.directory, name)
             if os.path.isdir(full_path):
                 shutil.rmtree(full_path)
             else:
                 os.remove(full_path)
-        os.rmdir(input_dir)
-        print(f"Cleaned all contents from {input_dir}")
+        #os.rmdir(input_dir)
+        #print(f"Cleaned all contents from {input_dir}")
 
     def list_uploaded_files(self):
         """List all files saved in the uploads folder."""

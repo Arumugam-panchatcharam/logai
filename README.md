@@ -29,6 +29,6 @@ python3 logai/gui/application.py # Run local plotly dash server.
 
 
 ## Reference
-    * ![LogAI](https://github.com/salesforce/logai): A Library for Log Analytics and Intelligence
+    * [Salesforce LogAI](https://github.com/salesforce/logai): A Library for Log Analytics and Intelligence
 ## License
 [BSD 3-Clause License](LICENSE.txt)

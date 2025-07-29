@@ -25,5 +25,9 @@
       "sim_th": 0.5,
       "depth": 5
     }
+  },
+    "feature_extractor_config": {
+      "group_by_category": ["Level"],
+      "group_by_time": "1min"
   }
 }

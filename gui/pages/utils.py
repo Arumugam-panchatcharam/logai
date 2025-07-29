@@ -47,7 +47,7 @@ def create_banner(app):
         id="banner",
         className="banner",
         children=[
-            html.Img(src=app.get_asset_url("logai_logo.png"), style={'width': '10%', 'height': 'auto'}),
+            html.Img(src=app.get_asset_url("logai_logo.png"), style={'width': '10rem', 'height': '10rem'}),
             html.Plaintext("  AI-Powered Fault Detection, Prediction and Auto-Healing for Home connectivity"),
         ],
     )
@@ -154,8 +154,8 @@ def create_file_setting_layout():
                          options=["No File Selected!"],
                          value="No File Selected",
                          style={"width": "100%"}),
-            html.Label("Attributes"),
-            dcc.Dropdown(id="attribute-name-options", multi=True),
+            #html.Label("Attributes"),
+            #dcc.Dropdown(id="attribute-name-options", multi=True),
             html.Label("Time Interval"),
             dcc.Slider(
                 0,

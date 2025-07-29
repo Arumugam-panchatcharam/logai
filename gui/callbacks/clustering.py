@@ -27,7 +27,6 @@ from logai.preprocess.preprocessor import PreprocessorConfig
 from ..pages.utils import create_param_table
 
 log_clustering = Clustering()
-file_manager = FileManager()
 
 
 def _clustering_config():
@@ -72,74 +71,54 @@ def create_attribute_component(attributes):
         Input("clustering_exception_modal_close", "n_clicks"),
     ],
     [
-        State("log-type-select", "value"),
-        State("attribute-name-options", "value"),
+        #State("log-type-select", "value"),
+        #State("attribute-name-options", "value"),
         State("file-select", "value"),
-        State("parsing-algo-select", "value"),
-        State("vectorization-algo-select", "value"),
-        State("categorical-encoder-select", "value"),
-        State("clustering-algo-select", "value"),
-        State("clustering-param-table", "children"),
-        State("clustering-parsing-param-table", "children"),
+        #State("parsing-algo-select", "value"),
+        #State("vectorization-algo-select", "value"),
+        #State("categorical-encoder-select", "value"),
+        #State("clustering-algo-select", "value"),
+        #State("clustering-param-table", "children"),
+        #State("clustering-parsing-param-table", "children"),
     ],
 )
 def click_run(
     btn_click,
     modal_close,
-    log_type,
-    attributes,
+    #log_type,
+    #attributes,
     filename,
-    parsing_algo,
-    vectorization_algo,
-    categorical_encoder,
-    clustering_algo,
-    clustering_param_table,
-    parsing_param_table,
+    #parsing_algo,
+    #vectorization_algo,
+    #categorical_encoder,
+    #clustering_algo,
+    #clustering_param_table,
+    #parsing_param_table,
 ):
     ctx = dash.callback_context
     if ctx.triggered:
         prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if prop_id == "clustering-btn":
             try:
-                file_path = os.path.join(file_manager.base_directory, filename)
-                clustering_params = log_clustering.parse_parameters(
-                    param_info=log_clustering.get_parameter_info(clustering_algo),
-                    params={
-                        p["Parameter"]: p["Value"]
-                        for p in clustering_param_table["props"]["data"]
-                        if p["Parameter"]
-                    },
-                )
-                parsing_params = LogPattern().parse_parameters(
-                    param_info=LogPattern().get_parameter_info(parsing_algo),
-                    params={
-                        p["Parameter"]: p["Value"]
-                        for p in parsing_param_table["props"]["data"]
-                        if p["Parameter"]
-                    },
-                )
+                file_manager = FileManager()
+                config_json = file_manager.load_config(filename)
+                #print(config_json, flush=True)
+                if config_json is not None:
+                    config = WorkFlowConfig.from_dict(config_json)
+                    #print(config, flush=True)
 
-                config = _clustering_config()
-                config.open_set_data_loader_config.filepath = (
-                    file_path  # overwrite the file path.
-                )
-                config.open_set_data_loader_config.dataset_name = log_type
-                config.feature_extractor_config.group_by_category = attributes
-                config.log_parser_config.parsing_algorithm = parsing_algo
+                file_path = os.path.join(file_manager.merged_logs_path, filename)
 
-                config_class = LogPattern().get_config_class(parsing_algo)
-                config.log_parser_config.parsing_algo_params = config_class.from_dict(
-                    parsing_params
-                )
+                config.data_loader_config.filepath = file_path
 
-                config.log_vectorizer_config.algo_name = vectorization_algo
-                config.categorical_encoder_config.algo_name = categorical_encoder
-                config.clustering_config.algo_name = clustering_algo
+                config.log_vectorizer_config = VectorizerConfig()
+                config.log_vectorizer_config.algo_name = "tfidf"
 
-                config_class = log_clustering.get_config_class(clustering_algo)
-                config.clustering_config.algo_params = config_class.from_dict(
-                    clustering_params
-                )
+                config.categorical_encoder_config = CategoricalEncoderConfig()
+                config.categorical_encoder_config.algo_name = "one_hot_encoder"
+
+                config.clustering_config = ClusteringConfig()
+                config.clustering_config.algo_name = "DBSCAN"
 
                 log_clustering.execute_clustering(config)
 

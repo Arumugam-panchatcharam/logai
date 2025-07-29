@@ -47,7 +47,7 @@ def create_clustering_algo_setting_layout():
             html.B("Parsing Algortihm"),
             dcc.Dropdown(
                 id="parsing-algo-select",
-                options=["DRAIN", "IPLoM", "AEL"],
+                options=["DRAIN3","DRAIN", "IPLoM", "AEL"],
                 value="DRAIN",
             ),
             html.Div(
@@ -58,7 +58,7 @@ def create_clustering_algo_setting_layout():
             dcc.Dropdown(
                 id="vectorization-algo-select",
                 options=["word2vec", "tfidf", "fasttext"],
-                value="word2vec",
+                value="tfidf",
             ),
             html.Br(),
             html.B("Categorical Encoder"),
@@ -72,7 +72,7 @@ def create_clustering_algo_setting_layout():
             dcc.Dropdown(
                 id="clustering-algo-select",
                 options=["DBSCAN", "kmeans"],
-                value="kmeans",
+                value="DBSCAN",
             ),
             html.Div(id="clustering-param-table", children=[create_param_table()]),
         ],

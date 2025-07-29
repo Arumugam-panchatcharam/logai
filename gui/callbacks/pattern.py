@@ -98,14 +98,14 @@ def get_attributes(log_type):
     ],
     [
         #State("log-type-select", "value"),
-        State("attribute-name-options", "value"),
+        #State("attribute-name-options", "value"),
         State("file-select", "value"),
         #State("parsing-algo-select", "value"),
         #State("parsing-param-table", "children"),
     ],
 )
 def click_run(
-    btn_click, modal_close, attributes, filename
+    btn_click, modal_close, filename
 ):
     ctx = dash.callback_context
     try:
@@ -120,24 +120,9 @@ def click_run(
                     #print(config, flush=True)
 
                 file_path = os.path.join(file_manager.merged_logs_path, filename)
-                """
-                params = log_pattern_demo.parse_parameters(
-                    param_info=log_pattern_demo.get_parameter_info(parsing_algo),
-                    params={
-                        p["Parameter"]: p["Value"]
-                        for p in param_table["props"]["data"]
-                        if p["Parameter"]
-                    },
-                )
-                """
                 config.data_loader_config.filepath = file_path
                 log_pattern_demo.execute_auto_parsing(config)
-                #config_class = log_pattern_demo.get_config_class(parsing_algo)
-                #config.log_parser_config.parsing_algo_params = config_class.from_dict(
-                #    params
-                #)
 
-                #log_pattern_demo.execute_auto_parsing(config)
                 return (
                     create_attribute_component(
                         log_pattern_demo.get_attributes()

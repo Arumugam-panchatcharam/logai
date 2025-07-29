@@ -14,6 +14,7 @@ from gui.pages import pattern as pattern_page
 from gui.pages import anomaly_detection as anomaly_page
 from gui.pages import clustering as clustering_page
 from gui.callbacks import pattern, anomaly_detection, clustering, utils
+from gui.file_manager import FileManager
 from flask import Flask
 flask_server = Flask(__name__)
 
@@ -27,6 +28,9 @@ app = dash.Dash(
 )
 #server = app.server
 #app.config["suppress_callback_exceptions"] = True
+
+file_manager = FileManager()
+file_manager.clean_temp_files()
 
 app.layout = dbc.Container(
     [
