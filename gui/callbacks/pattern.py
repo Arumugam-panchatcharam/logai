@@ -123,6 +123,9 @@ def click_run(
                     #print(config, flush=True)
 
                 file_path = os.path.join(file_manager.merged_logs_path, filename)
+                if not os.path.getsize(file_path):
+                    raise RuntimeError("File Lenght is Zero!")
+                
                 config.data_loader_config.filepath = file_path
                 log_pattern_demo.execute_auto_parsing(config)
 

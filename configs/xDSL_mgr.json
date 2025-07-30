@@ -1,5 +1,4 @@
 {
-    "_comment":"2025-06-03T15:21:49 speedport: PARODUS.INFO [tid=12672] PARODUS: Ping received with payload mac:34194dc2f81f, opcode 9",
   "data_loader_config": {
     "infer_datetime": true,
     "datetime_format": "%Y-%m-%dT%H:%M:%S",
@@ -16,7 +15,7 @@
     "custom_delimiters_regex":[],
     "custom_replace_list": {
       "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "PARODUS\\.([\\w]+)": "<Level>",
+      "XDSLMANAGER\\.([\\w]+)": "<Level>",
       "tid=\\d+\\]\\s*(.*)$": "<Content>"
     }
   },

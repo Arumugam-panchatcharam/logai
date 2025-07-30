@@ -1,6 +1,11 @@
 {
     "supported_files": [
         {
+            "name": "Airties",
+            "supported_config": "airties.json",
+            "supported_files": ["ArmConsolelog"]
+        },
+        {
             "name": "ArmConsole",
             "supported_config": "console_log.json",
             "supported_files": ["ArmConsolelog"]
@@ -24,6 +29,11 @@
             "name": "PSM_log",
             "supported_config": "psm_log.json",
             "supported_files": ["PSMlog"]
+        },
+        {
+            "name": "WEBPA",
+            "supported_config": "webpa.json",
+            "supported_files": ["WEBPAlog"]
         },
         {
             "name": "WiFi_Log",
@@ -56,6 +66,11 @@
             "supported_files": ["telemetry"]
         },
         {
+            "name": "TelcoVoiceManager",
+            "supported_config": "telco_voice_mgr.json",
+            "supported_files": ["TELCOVOICEMANAGERLog"]
+        },
+        {
             "name": "StateInfoManager",
             "supported_config": "state_info_manager.json",
             "supported_files": ["STATEINFOMANAGERLog"]
@@ -69,6 +84,16 @@
             "name": "Syslog_NG",
             "supported_config": "syslog_ng.json",
             "supported_files": ["syslog"]
+        },
+        {
+            "name": "CUJOAgent",
+            "supported_config": "cujo_agent.json",
+            "supported_files": ["CUJOAGENT"]
+        },
+        {
+            "name": "CCspCUJOAgent",
+            "supported_config": "ccsp_cujo_agent.json",
+            "supported_files": ["CCSPCUJOAGENTLog"]
         },
         {
             "name": "Messages",

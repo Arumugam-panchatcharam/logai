@@ -1,24 +1,21 @@
-{
-    "_comment":"2025-06-03T15:21:49 speedport: PARODUS.INFO [tid=12672] PARODUS: Ping received with payload mac:34194dc2f81f, opcode 9",
+
+{ 
+  "_commnet": "2025-06-03T15:21:41 telekom: CUJOAGENT [tracer]  INFO trace [timer=tracer cpu%=2.6444200866088559 vsize_kb=146988 rss_kb=22128 lua_mem_pre_gc_kb=1095.74609375 lua_mem_kb=1077.017578125 lua_refs=53 uptime_s=74700]",
   "data_loader_config": {
     "infer_datetime": true,
     "datetime_format": "%Y-%m-%dT%H:%M:%S",
     "reader_args": {
-      "log_format": "<DateTime> <project> <Level> <pid> <Content>"
+      "log_format": "<DateTime> <project> <Module> <Submodule> <Level1> <Level2> <Content>"
     },
     "dimensions": {
       "timestamp": ["DateTime"],
       "body": ["Content"],
-      "attributes": ["Level"]
+      "attributes": ["Module", "Level1", "Level2"]
     }
   },
   "preprocessor_config": {
-    "custom_delimiters_regex":[],
-    "custom_replace_list": {
-      "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "PARODUS\\.([\\w]+)": "<Level>",
-      "tid=\\d+\\]\\s*(.*)$": "<Content>"
-    }
+    "custom_delimiters_regex":["="],
+    "custom_replace_list": []
   },
    "log_parser_config": {
     "parsing_algorithm": "drain",

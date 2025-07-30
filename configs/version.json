@@ -1,24 +1,31 @@
+"""
+MACHINE_NAME=HGW01A-ARC
+imagename:HGW01A-ARC_v004.011.070#2025:05:16
+BRANCH=rdkb-2022q3-dunfell-dt
+VERSION=004.011.070
+SPIN=070
+BUILD-TIME="2025-05-16 14:34:44"
+WORKFLOW-TYPE=REL-RDK
+BUILD-ID=43962133
+Generated on Fri May 16  14:34:44 UTC 2025
+SDK_VERSION=ecnt--sdk-7.3.283.3100_v187
+"""
 {
-    "_comment":"2025-06-03T15:21:49 speedport: PARODUS.INFO [tid=12672] PARODUS: Ping received with payload mac:34194dc2f81f, opcode 9",
   "data_loader_config": {
     "infer_datetime": true,
-    "datetime_format": "%Y-%m-%dT%H:%M:%S",
+    "datetime_format": "%Y-%m-%d %H:%M:%S",
     "reader_args": {
-      "log_format": "<DateTime> <project> <Level> <pid> <Content>"
+      "log_format": "<DateTime> <id> <Module> <Submodule> <Content>"
     },
     "dimensions": {
       "timestamp": ["DateTime"],
       "body": ["Content"],
-      "attributes": ["Level"]
+      "attributes": ["Module", "Submodule"]
     }
   },
   "preprocessor_config": {
-    "custom_delimiters_regex":[],
-    "custom_replace_list": {
-      "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "PARODUS\\.([\\w]+)": "<Level>",
-      "tid=\\d+\\]\\s*(.*)$": "<Content>"
-    }
+    "custom_delimiters_regex":["-"],
+    "custom_replace_list": {}
   },
    "log_parser_config": {
     "parsing_algorithm": "drain",

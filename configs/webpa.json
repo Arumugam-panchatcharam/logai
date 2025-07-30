@@ -1,5 +1,5 @@
 {
-    "_comment":"2025-06-03T15:21:49 speedport: PARODUS.INFO [tid=12672] PARODUS: Ping received with payload mac:34194dc2f81f, opcode 9",
+  "_comment":"2025-06-03T18:03:12 speedport: WEBPA.INFO [tid=12808] WEBPA: Received data ParamName X_RDKCENTRAL-COM_Connected-Client,data : Connected-Client,Other,40:61:86:e9:ce:51,Connected,PCBuero",
   "data_loader_config": {
     "infer_datetime": true,
     "datetime_format": "%Y-%m-%dT%H:%M:%S",
@@ -16,7 +16,7 @@
     "custom_delimiters_regex":[],
     "custom_replace_list": {
       "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "PARODUS\\.([\\w]+)": "<Level>",
+      "WEBPA\\.([\\w]+)": "<Level>",
       "tid=\\d+\\]\\s*(.*)$": "<Content>"
     }
   },
