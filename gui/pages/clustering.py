@@ -11,6 +11,7 @@ from dash import dcc, html
 from .utils import (
     create_modal,
     create_description_card,
+    create_upload_file_layout,
     create_file_setting_layout,
     create_param_table,
 )
@@ -20,9 +21,9 @@ def create_control_card():
     return html.Div(
         id="control-card",
         children=[
-            # create_upload_file_layout(),
+            create_upload_file_layout(),
             create_file_setting_layout(),
-            create_clustering_algo_setting_layout(),
+            #create_clustering_algo_setting_layout(),
             html.Hr(),
             html.Div(
                 children=[html.Button(id="clustering-btn", children="Run", n_clicks=0)],
@@ -99,7 +100,8 @@ def create_display_layout():
                         )
                     ],
                     style={"marginTop": 0, "marginBottom": 0},
-                )
+                ),
+                style={"maxwidth": "900px"},
             ),
             html.B("Loglines in Cluster"),
             html.Hr(),

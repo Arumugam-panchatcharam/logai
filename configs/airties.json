@@ -1,23 +1,20 @@
 {
+  "_comment":"2025-06-03 15:21:20-[00352190]-[con]multiap-controller[20554]:[ctrl][tlv_parser] map_parse_assoc_wifi6_sta_status_tlv: sta[d2:4a:89:04:00:00] not found",
   "data_loader_config": {
     "infer_datetime": true,
-    "datetime_format": "%Y-%m-%dT%H:%M:%S",
+    "datetime_format": "%Y-%m-%d %H:%M:%S",
     "reader_args": {
-      "log_format": "<DateTime> <project> <Level> <pid> <Content>"
+      "log_format": "<DateTime> <id> <Module> <Submodule> <Content>"
     },
     "dimensions": {
       "timestamp": ["DateTime"],
       "body": ["Content"],
-      "attributes": ["Level"]
+      "attributes": ["Module", "Submodule"]
     }
   },
   "preprocessor_config": {
-    "custom_delimiters_regex":[],
-    "custom_replace_list": {
-      "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "WIFI\\.([\\w]+)": "<Level>",
-      "tid=\\d+\\]\\s*(.*)$": "<Content>"
-    }
+    "custom_delimiters_regex":["-", "[", "]"],
+    "custom_replace_list": {}
   },
    "log_parser_config": {
     "parsing_algorithm": "drain",

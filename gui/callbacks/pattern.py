@@ -116,10 +116,16 @@ def click_run(
                 config_json = file_manager.load_config(filename)
                 #print(config_json, flush=True)
                 if config_json is not None:
+                    # in log summarization disable parsing clustering and anomaly detection
+                    config_json['anomaly_detection_config'] = None
+                    config_json['clustering_config'] = None
                     config = WorkFlowConfig.from_dict(config_json)
                     #print(config, flush=True)
 
                 file_path = os.path.join(file_manager.merged_logs_path, filename)
+                if not os.path.getsize(file_path):
+                    raise RuntimeError("File Lenght is Zero!")
+                
                 config.data_loader_config.filepath = file_path
                 log_pattern_demo.execute_auto_parsing(config)
 

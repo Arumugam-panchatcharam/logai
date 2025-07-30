@@ -15,7 +15,7 @@
     "custom_delimiters_regex":[],
     "custom_replace_list": {
       "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "WIFI\\.([\\w]+)": "<Level>",
+      "XDSLMANAGER\\.([\\w]+)": "<Level>",
       "tid=\\d+\\]\\s*(.*)$": "<Content>"
     }
   },

@@ -16,13 +16,14 @@ log_pattern_demo = LogPattern()
 
 def test_parse():
     file_manager = FileManager()
-    config_json = file_manager.load_config("WiFilog.txt")
+    config_json = file_manager.load_config("CUJOAGENT.log")
     print(config_json, flush=True)
     if config_json is not None:
+        config_json['anomaly_detection_config'] = None
         config = WorkFlowConfig.from_dict(config_json)
         print(config, flush=True)
 
-    file_path = os.path.join(file_manager.merged_logs_path, "WiFilog.txt")
+    file_path = os.path.join(file_manager.merged_logs_path, "CUJOAGENT.log")
     """
     params = log_pattern_demo.parse_parameters(
         param_info=log_pattern_demo.get_parameter_info(parsing_algo),

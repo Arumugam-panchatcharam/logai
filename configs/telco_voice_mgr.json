@@ -1,4 +1,5 @@
 {
+  "_comment":"2025-06-03T15:30:43 speedport: TELCOVOICEMANAGER.INFO [tid=2672] get_event_param:1144 Event name = voiceServiceUpdateObject",
   "data_loader_config": {
     "infer_datetime": true,
     "datetime_format": "%Y-%m-%dT%H:%M:%S",
@@ -15,7 +16,7 @@
     "custom_delimiters_regex":[],
     "custom_replace_list": {
       "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "WIFI\\.([\\w]+)": "<Level>",
+      "TELCOVOICEMANAGER\\.([\\w]+)": "<Level>",
       "tid=\\d+\\]\\s*(.*)$": "<Content>"
     }
   },
