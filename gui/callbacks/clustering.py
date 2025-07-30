@@ -104,6 +104,8 @@ def click_run(
                 config_json = file_manager.load_config(filename)
                 #print(config_json, flush=True)
                 if config_json is not None:
+                    # in log clustering disable anomaly detection
+                    config_json['anomaly_detection_config'] = None
                     config = WorkFlowConfig.from_dict(config_json)
                     #print(config, flush=True)
 

@@ -53,20 +53,6 @@ def create_ad_algo_setting_layout():
             ),
             html.Div(id="ad-parsing-param-table", children=[create_param_table()]),
             html.Br(),
-            html.B("Vectorization Algortihm"),
-            dcc.Dropdown(
-                id="vectorization-algo-select",
-                options=["word2vec", "tfidf", "fasttext"],
-                value="word2vec",
-            ),
-            html.Br(),
-            html.B("Categorical Encoder"),
-            dcc.Dropdown(
-                id="categorical-encoder-select",
-                options=["label_encoder", "one_hot_encoder", "ordinal_encoder"],
-                value="label_encoder",
-            ),
-            html.Br(),
             html.B("Anomaly Detection Algortihm"),
             dcc.Dropdown(
                 id="ad-algo-select",
@@ -95,12 +81,20 @@ def create_display_layout():
                 dbc.CardBody(
                     [
                         dcc.Loading(
-                            id="loading-timechart",
-                            children=[dbc.Row(dcc.Graph(id="time_chart"))],
-                            type="default",
+                            [
+                            #id="loading-timechart",
+                            html.Div(
+                                children=[
+                                    dcc.Graph(id="time_chart")
+                                ],
+                                style={'overflowX': 'scroll', 'height': '400px', 'border': '1px solid lightgray'}
+                            )
+                            #children=[dbc.Row(dcc.Graph(id="time_chart"))],
+                            #type="default",
+                            ]
                         )
                     ],
-                    style={"marginTop": 0, "marginBottom": 0},
+                    #style={"marginTop": 0, "marginBottom": 0},
                 ),
             ),
             html.B("Anomalies"),
@@ -115,6 +109,7 @@ def create_display_layout():
                         )
                     ]
                 ),
+                style={"maxwidth": "900px"},
             ),
         ],
     )

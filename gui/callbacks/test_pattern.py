@@ -19,6 +19,7 @@ def test_parse():
     config_json = file_manager.load_config("WiFilog.txt")
     print(config_json, flush=True)
     if config_json is not None:
+        config_json['anomaly_detection_config'] = None
         config = WorkFlowConfig.from_dict(config_json)
         print(config, flush=True)
 

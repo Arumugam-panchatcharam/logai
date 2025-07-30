@@ -29,8 +29,6 @@ from logai.utils import constants
 from ..pages.utils import create_param_table
 
 log_anomaly_demo = LogAnomaly()
-file_manager = FileManager()
-
 
 def _ad_config_sample():
     config = WorkFlowConfig(
@@ -73,31 +71,31 @@ def create_attribute_component(attributes):
         Input("anomaly_exception_modal_close", "n_clicks"),
     ],
     [
-        State("log-type-select", "value"),
-        State("attribute-name-options", "value"),
+        #State("log-type-select", "value"),
+        #State("attribute-name-options", "value"),
         State("file-select", "value"),
-        State("parsing-algo-select", "value"),
-        State("vectorization-algo-select", "value"),
-        State("categorical-encoder-select", "value"),
+        #State("parsing-algo-select", "value"),
+        #State("vectorization-algo-select", "value"),
+        #State("categorical-encoder-select", "value"),
         State("ad-algo-select", "value"),
         State("time-interval", "value"),
         State("ad-param-table", "children"),
-        State("ad-parsing-param-table", "children"),
+        #State("ad-parsing-param-table", "children"),
     ],
 )
 def click_run(
     btn_click,
     modal_close,
-    log_type,
-    attributes,
+    #log_type,
+    #attributes,
     filename,
-    parsing_algo,
-    vectorization_algo,
-    categorical_encoder,
+    #parsing_algo,
+    #vectorization_algo,
+    #categorical_encoder,
     ad_algo,
     time_interval,
     ad_param_table,
-    parsing_param_table,
+    #parsing_param_table,
 ):
     ctx = dash.callback_context
     if ctx.triggered:
@@ -107,7 +105,6 @@ def click_run(
                 interval_map = {0: "1s", 1: "1min", 2: "1h", 3: "1d"}
                 freq = interval_map[time_interval]
 
-                file_path = os.path.join(file_manager.base_directory, filename)
                 ad_params = log_anomaly_demo.parse_parameters(
                     param_info=log_anomaly_demo.get_parameter_info(ad_algo),
                     params={
@@ -116,31 +113,28 @@ def click_run(
                         if p["Parameter"]
                     },
                 )
-                parsing_params = LogPattern().parse_parameters(
-                    param_info=LogPattern().get_parameter_info(parsing_algo),
-                    params={
-                        p["Parameter"]: p["Value"]
-                        for p in parsing_param_table["props"]["data"]
-                        if p["Parameter"]
-                    },
-                )
 
-                config = _ad_config_sample()
-                config.open_set_data_loader_config.filepath = (
-                    file_path  # overwrite the file path.
-                )
-                config.open_set_data_loader_config.dataset_name = log_type
-                config.feature_extractor_config.group_by_category = attributes
-                config.feature_extractor_config.group_by_time = freq
-                config.log_parser_config.parsing_algorithm = parsing_algo
+                file_manager = FileManager()
+                config_json = file_manager.load_config(filename)
+                #print(config_json, flush=True)
+                if config_json is not None:
+                    config = WorkFlowConfig.from_dict(config_json)
+                    #print(config, flush=True)
 
-                config_class = LogPattern().get_config_class(parsing_algo)
-                config.log_parser_config.parsing_algo_params = config_class.from_dict(
-                    parsing_params
-                )
+                file_path = os.path.join(file_manager.merged_logs_path, filename)
 
-                config.log_vectorizer_config.algo_name = vectorization_algo
-                config.categorical_encoder_config.algo_name = categorical_encoder
+                config.data_loader_config.filepath = file_path
+
+                #config.log_vectorizer_config = VectorizerConfig()
+                #config.log_vectorizer_config.algo_name = "tfidf"
+
+                #config.categorical_encoder_config = CategoricalEncoderConfig()
+                #config.categorical_encoder_config.algo_name = "one_hot_encoder"
+
+                #config.clustering_config = ClusteringConfig()
+                #config.clustering_config.algo_name = "DBSCAN"
+
+                #config.feature_extractor_config.group_by_time = freq
                 config.anomaly_detection_config.algo_name = ad_algo
 
                 config_class = log_anomaly_demo.get_config_class(ad_algo)
@@ -149,7 +143,7 @@ def click_run(
                 )
 
                 log_anomaly_demo.execute_anomaly_detection(config)
-
+                #print("anamoloy detec: ", log_anomaly_demo.get_attributes())
                 return (
                     create_attribute_component(log_anomaly_demo.get_attributes()),
                     False,
