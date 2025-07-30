@@ -74,6 +74,46 @@
             "name": "Messages",
             "supported_config": "console_log.json",
             "supported_files": ["messages"]
+        },
+	{
+            "name": "VLANManagerLog",
+            "supported_config": "vlanmanager_log.json",
+            "supported_files": ["VLANManagerLog"]
+        },
+	{
+            "name": "WEBPAlog",
+            "supported_config": "webpa_log.json",
+            "supported_files": ["WEBPAlog"]
+        },
+        {
+            "name": "CCSPCUJOAGENTlog",
+            "supported_config": "ccspcujoagent_log.json",
+            "supported_files": ["CCSPCUJOAGENTlog"]
+        },
+        {
+            "name": "CELLULARMANAGERlog",
+            "supported_config": "cellularmanager_log.json",
+            "supported_files": ["CELLULARMANAGERLog"]
+        },
+        {
+            "name": "EnrolmentAgentlog",
+            "supported_config": "enrollmentagent_log.json",
+            "supported_files": ["EnrolmentAgentLog"]
+        },
+        {
+            "name": "ETHAGENTlog",
+            "supported_config": "ethagent_log.json",
+            "supported_files": ["ETHAGENTLog"]
+        },
+        {
+            "name": "GponManagerlog",
+            "supported_config": "gponmanager_log.json",
+            "supported_files": ["GponManagerLog"]
+        },
+        {
+            "name": "IPv6Privacylog",
+            "supported_config": "ipv6privacy_log.json",
+            "supported_files": ["IPV6PrivacyLog"]
         }
     ]
 }
