@@ -41,6 +41,28 @@ class DashLogger(logging.StreamHandler):
         except Exception:
             self.handleError(record)
 
+def create_run_button(button_id):
+    button_id_all = button_id + "-all"
+    return dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            html.Div(
+                            children=[html.Button(id=button_id, children="Run", n_clicks=0)],
+                            style={"textAlign": "center"},
+                            ),
+                        ]
+                    ),
+                    dbc.Col(
+                        [
+                            html.Div(
+                            children=[html.Button(id=button_id_all, children="Run-All", n_clicks=0)],
+                            style={"textAlign": "center"},
+                            ),
+                        ]
+                    ),
+                ]
+            )
 
 def create_banner(app):
     return html.Div(
