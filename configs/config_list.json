@@ -91,11 +91,6 @@
             "supported_files": ["CUJOAGENT"]
         },
         {
-            "name": "CCspCUJOAgent",
-            "supported_config": "ccsp_cujo_agent.json",
-            "supported_files": ["CCSPCUJOAGENTLog"]
-        },
-        {
             "name": "Messages",
             "supported_config": "console_log.json",
             "supported_files": ["messages"]
@@ -139,6 +134,66 @@
             "name": "IPv6Privacylog",
             "supported_config": "ipv6privacy_log.json",
             "supported_files": ["IPV6PrivacyLog"]
+        },
+        {
+            "name": "NOTIFYlog",
+            "supported_config": "notify_log.json",
+            "supported_files": ["NOTIFYLog"]
+        },
+        {
+            "name": "PPPManagerlog",
+            "supported_config": "pppmanager_log.json",
+            "supported_files": ["PPPManagerLog"]
+        },
+        {
+            "name": "RTMessagelog",
+            "supported_config": "rtmessage_log.json",
+            "supported_files": ["RTMessagelog"]
+        },
+        {
+            "name": "SmartHomeAgentLog",
+            "supported_config": "smarthomeagent_log.json",
+            "supported_files": ["SmartHomeAgentLog"]
+        },
+        {
+            "name": "TDMlog",
+            "supported_config": "tdm_log.json",
+            "supported_files": ["TDMlog"]
+        },
+        {
+            "name": "TELCOVOICEMANAGERLog",
+            "supported_config": "telecovoice_log.json",
+            "supported_files": ["TELCOVOICEMANAGERLog"]
+        },
+        {
+            "name": "VLANManagerLog",
+            "supported_config": "vlanmanager_log.json",
+            "supported_files": ["VLANManagerLog"]
+        },
+        {
+            "name": "VPNManagerLog",
+            "supported_config": "vpnmanager_log.json",
+            "supported_files": ["VPNManagerLog"]
+        },
+        {
+            "name": "WANMANAGERLog",
+            "supported_config": "wanmanager_log.json",
+            "supported_files": ["WANMANAGERLog"]
+        },
+        {
+            "name": "WEBPAlog",
+            "supported_config": "webpa_log.json",
+            "supported_files": ["WEBPAlog"]
+        },
+        {
+            "name": "xconf",
+            "supported_config": "xconf_log.json",
+            "supported_files": ["xconf"]
+        },
+        {
+            "name": "XDSLMANAGERLog",
+            "supported_config": "xdslmanager_log.json",
+            "supported_files": ["XDSLMANAGERLog"]
         }
     ]
 }

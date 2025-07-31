@@ -1,0 +1,33 @@
+{
+  "data_loader_config": {
+    "infer_datetime": true,
+    "datetime_format": "%Y-%m-%dT%H:%M:%S",
+    "reader_args": {
+      "log_format": "<DateTime> <project> <Level> <pid> <Content>"
+    },
+    "dimensions": {
+      "timestamp": ["DateTime"],
+      "body": ["Content"],
+      "attributes": ["Level"]
+    }
+  },
+  "preprocessor_config": {
+    "custom_delimiters_regex":[],
+    "custom_replace_list": {
+      "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
+      "LM\\.([\\w]+)": "<Level>",
+      "tid=\\d+\\]\\s*(.*)$": "<Content>"
+    }
+  },
+   "log_parser_config": {
+    "parsing_algorithm": "drain",
+    "parsing_algo_params": {
+      "sim_th": 0.5,
+      "depth": 5
+    }
+  },
+    "feature_extractor_config": {
+      "group_by_category": ["Level"],
+      "group_by_time": "1min"
+  }
+}

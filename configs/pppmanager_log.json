@@ -1,4 +1,5 @@
-{
+
+
   "data_loader_config": {
     "infer_datetime": true,
     "datetime_format": "%Y-%m-%dT%H:%M:%S",
@@ -15,7 +16,7 @@
     "custom_delimiters_regex":[],
     "custom_replace_list": {
       "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "STATEINFOMANAGER\\.([\\w]+)": "<Level>",
+      "PPPMANAGER\\.([\\w]+)": "<Level>",
       "tid=\\d+\\]\\s*(.*)$": "<Content>"
     }
   },
