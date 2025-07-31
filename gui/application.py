@@ -7,25 +7,22 @@
 #
 import dash
 import dash_bootstrap_components as dbc
-from dash import dcc, html, Input, Output, State, callback
+from dash import dcc, html, Input, Output, State
+from gui.app_instance import app, flask_server
 
 from gui.pages.utils import create_banner
 from gui.pages import pattern as pattern_page
 from gui.pages import anomaly_detection as anomaly_page
 from gui.pages import clustering as clustering_page
-from gui.callbacks import pattern, anomaly_detection, clustering, utils
+from gui.pages import ai_analysis as ai_analysis_page
+from gui.callbacks import pattern, anomaly_detection, clustering, utils, ai_analysis
 from gui.file_manager import FileManager
 from flask import Flask
 flask_server = Flask(__name__)
 
-app = dash.Dash(
-    __name__,
-    suppress_callback_exceptions=True,
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
-    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-    title="LogAI",
-    server=flask_server
-)
+file_manager = FileManager()
+file_manager.clean_temp_files()
+
 #server = app.server
 #app.config["suppress_callback_exceptions"] = True
 
@@ -42,7 +39,7 @@ app.layout = dbc.Container(
 )
 
 
-@callback(Output("page-content", "children"), [Input("url", "pathname")])
+@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def display_page(pathname):
     if pathname == "/logai/pattern":
         return dbc.Container(
@@ -55,6 +52,10 @@ def display_page(pathname):
     elif pathname == "/logai/clustering":
         return dbc.Container(
             [dbc.Row(dbc.Col(create_banner(app))), clustering_page.layout], fluid=True
+        )
+    elif pathname == "/logai/ai_analysis":
+        return dbc.Container(
+            [dbc.Row(dbc.Col(create_banner(app))), ai_analysis_page.layout], fluid=True
         )
     else:
         return dbc.Container(
