@@ -14,6 +14,7 @@ from .utils import (
     create_upload_file_layout,
     create_file_setting_layout,
     create_param_table,
+    create_run_button
 )
 
 
@@ -25,10 +26,7 @@ def create_control_card():
             create_file_setting_layout(),
             #create_clustering_algo_setting_layout(),
             html.Hr(),
-            html.Div(
-                children=[html.Button(id="clustering-btn", children="Run", n_clicks=0)],
-                style={"textAlign": "center"},
-            ),
+            create_run_button("clustering-btn"),
             create_modal(
                 modal_id="clustering_exception_modal",
                 header="An Exception Occurred",
