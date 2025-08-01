@@ -14,7 +14,7 @@ from .utils import (
     create_upload_file_layout,
     create_file_setting_layout,
     create_param_table,
-    create_run_button
+    create_cluster_run_button
 )
 
 
@@ -26,7 +26,7 @@ def create_control_card():
             create_file_setting_layout(),
             #create_clustering_algo_setting_layout(),
             html.Hr(),
-            create_run_button("clustering-btn"),
+            create_cluster_run_button("clustering-btn"),
             create_modal(
                 modal_id="clustering_exception_modal",
                 header="An Exception Occurred",
@@ -163,6 +163,37 @@ def create_clustering_layout():
                             )
                         ]
                     ),
+                    html.B("Total Charts"),
+                        html.Hr(),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    dbc.Card(
+                                        dbc.CardBody(
+                                            [
+                                                dcc.Loading(
+                                                    [
+                                                        dcc.Graph(id="pattern-graph_total"),
+                                                    ]
+                                                )
+                                            ]
+                                        )
+                                    ),
+                                    width=12,
+                                ),
+                            ],
+                        ),
+                        html.B("Cluster template"),
+                        html.Hr(),
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.Div(
+                                        id="cluster-tmp",
+                                    )
+                                ],
+                            ),
+                        ),
                 ]
             ),
         ],

@@ -329,7 +329,7 @@ def select_parsing_algorithm(algorithm):
     param_table = create_param_table(param_info)
     return param_table
 
-
+'''
 def combine_logs_by_timestamp(input_folder, output_log_path):
     """
     Combines log lines from all files in input_folder.
@@ -476,6 +476,6 @@ def show_cluster_details(clickData):
             html.Pre(str(point), style={"color": "crimson", "fontSize": "smaller"})
              ])
 
-    
+   ''' 
 
 			
