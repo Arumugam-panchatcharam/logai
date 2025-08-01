@@ -102,11 +102,7 @@ def get_attributes(log_type):
         Input("pattern_exception_modal_close", "n_clicks"),
     ],
     [
-        #State("log-type-select", "value"),
-        #State("attribute-name-options", "value"),
         State("file-select", "value"),
-        #State("parsing-algo-select", "value"),
-        #State("parsing-param-table", "children"),
     ],
 )
 def click_run(

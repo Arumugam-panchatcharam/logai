@@ -13,7 +13,6 @@ from .utils import (
     create_description_card,
     create_upload_file_layout,
     create_file_setting_layout,
-    create_param_table,
     create_run_button
 )
 
@@ -24,47 +23,22 @@ def create_control_card():
         children=[
             create_upload_file_layout(),
             create_file_setting_layout(),
-            create_summarization_algo_setting_layout(),
             html.Hr(),
-            create_run_button("pattern-btn"),
+            create_run_button("telemetry-btn"),
             create_modal(
-                modal_id="pattern_exception_modal",
+                modal_id="telemetry_exception_modal",
                 header="An Exception Occurred",
                 content="An exception occurred. Please click OK to continue.",
-                content_id="pattern_exception_modal_content",
-                button_id="pattern_exception_modal_close",
+                content_id="telemetry_exception_modal_content",
+                button_id="telemetry_exception_modal_close",
             ),
         ],
     )
-
-
-def create_summarization_algo_setting_layout():
-    return html.Div(
-        id="algo-setting-layout",
-        children=[
-            html.Br(),
-            html.B("Parsing Algortihm"),
-            dcc.Dropdown(
-                id="parsing-algo-select",
-                options=["DRAIN", "IPLoM", "AEL"],
-                value="DRAIN",
-            ),
-            html.Div(id="parsing-param-table", children=[create_param_table()]),
-        ],
-    )
-
-
-def create_summary_graph_layout():
-    return html.Div(
-        dcc.Graph(id="summary-scatter"),
-        # style={'width': '39%', 'display': 'inline-block', 'padding': '0 20'}
-    )
-
 
 def create_timeseries_grapy_layout():
     return html.Div(
         children=[
-            dcc.Graph(id="pattern-time-series"),
+            dcc.Graph(id="telemetry-time-series"),
         ],
         # style={
         #     'display': 'inline-block',
@@ -73,7 +47,7 @@ def create_timeseries_grapy_layout():
     )
 
 
-def create_pattern_layout():
+def create_telemetry_layout():
     return dbc.Row(
         [
             # Left column
@@ -95,113 +69,42 @@ def create_pattern_layout():
             dbc.Col(
                 html.Div(
                     [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    dbc.Card(
-                                        dbc.CardBody(
-                                            [
-                                                html.H4("Summary"),
-                                                html.Div(
-                                                    id="log-summarization-summary"
-                                                ),
-                                            ]
-                                        )
-                                    ),
-                                    width=4,
-                                ),
-                                dbc.Col(
-                                    dbc.Card(
-                                        dbc.CardBody(
-                                            [
-                                                html.H4("Attributes"),
-                                                html.Div(id="attribute-options"),
-                                            ]
-                                        )
-                                    ),
-                                    width=8,
-                                ),
-                            ]
-                        ),
-                        html.B("Charts"),
+                        html.H4("Telemetry Summarizaton"),
                         html.Hr(),
                         dbc.Row(
                             [
-                                dbc.Col(
-                                    dbc.Card(
-                                        dbc.CardBody(
-                                            [
-                                                dcc.Loading(
-                                                    [
-                                                        create_summary_graph_layout(),
-                                                    ]
-                                                )
-                                            ]
-                                        )
-                                    ),
-                                    width=4,
-                                ),
-                                dbc.Col(
-                                    dbc.Card(
-                                        dbc.CardBody(
-                                            [
-                                                dcc.Loading(
-                                                    [
-                                                        create_timeseries_grapy_layout(),
-                                                    ]
-                                                )
-                                            ]
-                                        )
-                                    ),
-                                    width=8,
-                                ),
+                                dbc.Col(dbc.Card([
+                                    dbc.CardHeader("Device Info"),
+                                    dbc.CardBody(id="dev-summary-card", children=html.Div("Click 'Run' to load summary."))
+                                ]), width=4),
+                                dbc.Col(dbc.Card([
+                                    dbc.CardHeader("Device Status"),
+                                    dbc.CardBody(id="dev-status-card", children=html.Div("Click 'Run' to load summary."))
+                                ]), width=4),
                             ],
                         ),
-                        html.B("Log Patterns"),
                         html.Hr(),
-                        dbc.Card(
-                            dbc.CardBody(
-                                [
-                                    html.Div(
-                                        id="log-patterns",
-                                    )
-                                ],
-                            ),
-                            id="pattern-log-card",
-                        ),
-                        html.B("Dynamic Values"),
+                        dbc.Row([
+                            dbc.Col(dbc.Card([
+                                    dbc.CardHeader("Memory Split"),
+                                    dbc.CardBody(id="mem-chart-card", children=html.Div("Click 'Run' to load chart."))
+                                ]), width=6),
+                            dbc.Col(dbc.Card([
+                                    dbc.CardHeader("Network Stats"),
+                                    dbc.CardBody(id="network-stat-chart-card", children=html.Div("Click 'Run' to load chart."))
+                                ]), width=6),
+                        ]),
                         html.Hr(),
-                        dbc.Card(
-                            dbc.CardBody(
-                                [
-                                    dcc.Loading(
-                                        id="loading-dynamic-values",
-                                        children=[html.Div(id="log-dynamic-lists")],
-                                        type="default",
-                                    )
-                                ],
-                            ),
-                            id="pattern-dynamic-values",
-                        ),
-                        html.B("Log Lines"),
-                        html.Hr(),
-                        dbc.Card(
-                            dbc.CardBody(
-                                [
-                                    dcc.Loading(
-                                        id="loading-loglines",
-                                        children=[
-                                            dbc.Row(
-                                                dbc.Col(html.Div(id="select-loglines"))
-                                            )
-                                        ],
-                                        type="default",
-                                    )
-                                ]
-                            ),
-                            id="result_table_card",
-                            style={"maxwidth": "900px"},
-                        ),
+                        dbc.Row([
+                            dbc.Col(dbc.Card([
+                                    dbc.CardHeader("CPU Usage vs CPU Temp"),
+                                    dbc.CardBody(id="cpu-chart-card", children=html.Div("Click 'Run' to load chart."))
+                                ]), width=6),
+                            dbc.Col(dbc.Card([
+                                    dbc.CardHeader("Radio Stats"),
+                                    dbc.CardBody(id="radio-stat-chart-card", children=html.Div("Click 'Run' to load chart."))
+                                ]), width=6),
+                        ])
                     ]
                 )
             ),
@@ -209,4 +112,4 @@ def create_pattern_layout():
     )
 
 
-layout = create_pattern_layout()
+layout = create_telemetry_layout()

@@ -11,9 +11,10 @@ from dash import dcc, html, Input, Output, State, callback
 
 from gui.pages.utils import create_banner
 from gui.pages import pattern as pattern_page
+from gui.pages import telemetry as telemetry_page
 from gui.pages import anomaly_detection as anomaly_page
 from gui.pages import clustering as clustering_page
-from gui.callbacks import pattern, anomaly_detection, clustering, utils
+from gui.callbacks import pattern, telemetry, anomaly_detection, clustering, utils
 from gui.file_manager import FileManager
 from flask import Flask
 flask_server = Flask(__name__)
@@ -44,7 +45,11 @@ app.layout = dbc.Container(
 
 @callback(Output("page-content", "children"), [Input("url", "pathname")])
 def display_page(pathname):
-    if pathname == "/logai/pattern":
+    if pathname == "/logai/telemetry":
+        return dbc.Container(
+            [dbc.Row(create_banner(app)), telemetry_page.layout], fluid=True
+        )
+    elif pathname == "/logai/pattern":
         return dbc.Container(
             [dbc.Row(create_banner(app)), pattern_page.layout], fluid=True
         )

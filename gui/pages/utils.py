@@ -92,6 +92,14 @@ def create_menu():
             dbc.Row(
                 dcc.Link(
                     "Log Summarization",
+                    href="/logai/telemetry",
+                    className="tab first",
+                    style={"font-weight": "bold", "text-decoration": "underline"},
+                )
+            ),
+            dbc.Row(
+                dcc.Link(
+                    "Log Parsing",
                     href="/logai/pattern",
                     className="tab first",
                     style={"font-weight": "bold", "text-decoration": "underline"},

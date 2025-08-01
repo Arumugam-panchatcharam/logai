@@ -20,7 +20,7 @@ from logai.utils.constants import UPLOAD_DIRECTORY, MERGED_LOGS_DIRECTORY
 
 from typing import List, Optional, Tuple, Dict, Any
 
-from  logai.preprocess.telemetry_log_parser import Telemetry2Parser
+from  logai.preprocess.telemetry_parser import Telemetry2Parser
 
 @dataclass
 class ConfigEntry:
