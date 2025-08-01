@@ -57,6 +57,14 @@ def create_attribute_component(attributes):
         },
         style_header_conditional=[{"textAlign": "left"}],
         style_cell_conditional=[{"textAlign": "left"}],
+        style_header={
+            'backgroundColor': 'rgb(50, 50, 50)',
+            'color': 'white'
+        },
+        style_data={
+            'backgroundColor': 'white',
+            'color': 'black'
+        },
     )
     # print(table)
     return html.Div(children=[table, html.Div(id="table-dropdown-container")])
@@ -243,6 +251,14 @@ def update_counter_table(data):
             page_action="native",
             page_size=20,
             page_current=0,
+            style_header={
+                'backgroundColor': 'rgb(50, 50, 50)',
+                'color': 'white'
+            },
+            style_data={
+                'backgroundColor': 'white',
+                'color': 'black'
+            },
         )
     else:
         return dash_table.DataTable()

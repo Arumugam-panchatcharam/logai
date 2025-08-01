@@ -20,6 +20,8 @@ from logai.utils.constants import UPLOAD_DIRECTORY, MERGED_LOGS_DIRECTORY
 
 from typing import List, Optional, Tuple, Dict, Any
 
+from  logai.preprocess.telemetry_log_parser import Telemetry2Parser
+
 @dataclass
 class ConfigEntry:
     name: str
@@ -105,6 +107,10 @@ class FileManager:
         self._merge_files(temp_dir, output_dir=os.path.join(self.directory, "merged_logs"))
         # remove temporary directory
         shutil.rmtree(temp_dir)
+
+        # Extract Telemetry Profiles
+        temp_telemetry_parser = Telemetry2Parser()
+        temp_telemetry_parser.extract_telemetry_reports()
     """
     def _merge_files(self,temp_dir, output_dir="./merged_logs"):
         os.makedirs(output_dir, exist_ok=True)

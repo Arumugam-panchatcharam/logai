@@ -57,6 +57,14 @@ def create_attribute_component(attributes):
         },
         style_header_conditional=[{"textAlign": "left"}],
         style_cell_conditional=[{"textAlign": "left"}],
+        style_header={
+            'backgroundColor': 'rgb(50, 50, 50)',
+            'color': 'black'
+        },
+        style_data={
+            'backgroundColor': 'white',
+            'color': 'black'
+        },
     )
     return html.Div(children=[table, html.Div(id="table-dropdown-container")])
 
@@ -185,6 +193,14 @@ def update_dynamic_lists(data):
             sort_action="native",
             sort_mode="multi",
             column_selectable="single",
+            style_header={
+                'backgroundColor': 'rgb(50, 50, 50)',
+                'color': 'white'
+            },
+            style_data={
+                'backgroundColor': 'white',
+                'color': 'black'
+            },
         )
     else:
         return dash_table.DataTable()
@@ -213,6 +229,14 @@ def update_logline(data):
             page_action="native",
             page_size=20,
             page_current=0,
+            style_header={
+                'backgroundColor': 'rgb(50, 50, 50)',
+                'color': 'black'
+            },
+            style_data={
+                'backgroundColor': 'white',
+                'color': 'black'
+            },
         )
     else:
         return dash_table.DataTable()
@@ -262,7 +286,7 @@ def update_y_timeseries(data, interval):
     dff = result_df[result_df["parsed_logline"] == pattern][
         ["timestamp", "parsed_logline"]
     ]
-    #print(dff)
+    print(dff)
     ts_df = (
         dff[["timestamp", "parsed_logline"]]
         .groupby(pd.Grouper(key="timestamp", freq=freq, offset=0, label="right"))

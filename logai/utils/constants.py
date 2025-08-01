@@ -9,6 +9,7 @@ from enum import Enum
 
 UPLOAD_DIRECTORY = "./app_uploaded_files"
 MERGED_LOGS_DIRECTORY = "./app_uploaded_files/merged_logs"
+TELEMETRY_PROFILES = "./app_uploaded_files/telemetry"
 
 DIGITS_SUB = "[DIGITS]"
 TIMESTAMP = "[TIMESTAMP]"
