@@ -22,6 +22,7 @@ from gui.file_manager import FileManager
 def upload_file(_, uploaded_filenames, uploaded_file_contents):
     options = []
     file_manager = FileManager()
+    file_manager.clean_temp_files()
     ctx = dash.callback_context
     
     if ctx.triggered:
