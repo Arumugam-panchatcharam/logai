@@ -1,5 +1,6 @@
 import re
 import os
+import json
 import glob
 from logai.utils.constants import TELEMETRY_PROFILES, MERGED_LOGS_DIRECTORY
 from logai.utils import json_helper
@@ -95,22 +96,23 @@ class Telemetry2Parser:
                 # Remove log prefixes from line (works anywhere in the line)
                 clean_line = self.log_prefix_pattern.sub("", line)
         
-                # If not inside a JSON block, look for the beginning
+                # For every collected line, strip newlines and spaces immediately:
+                stripped_line = clean_line.strip().replace('\n', '').replace('\r', '')
                 if not inside_json:
-                    brace_pos = clean_line.find("{")
+                    brace_pos = stripped_line.find("{")
                     if brace_pos != -1:
                         inside_json = True
-                        json_buffer = clean_line[brace_pos:]
+                        json_buffer = stripped_line[brace_pos:]
                         open_braces = json_buffer.count("{") - json_buffer.count("}")
                         if open_braces == 0:
-                            json_blocks.append(json_buffer.strip())
+                            json_blocks.append(json_buffer)
                             inside_json = False
                             json_buffer = ""
                 else:
-                    json_buffer += clean_line
-                    open_braces += clean_line.count("{") - clean_line.count("}")
+                    json_buffer += stripped_line
+                    open_braces += stripped_line.count("{") - stripped_line.count("}")
                     if open_braces == 0:
-                        json_blocks.append(json_buffer.strip())
+                        json_blocks.append(json_buffer)
                         inside_json = False
                         json_buffer = ""
         
@@ -127,9 +129,8 @@ class Telemetry2Parser:
                 json_str = re.sub(r'[%\s]+$', '', json_str)
             outname = f"Telemetry2_report_{idx}.json"
             out_path = os.path.join(self.telemetry_path, outname)
-            with open(out_path, "w") as fout:
-                fout.write(json_str)
-            #print(f"Saved: {outname}")
+            with open(out_path, "w", encoding="utf-8") as fout:
+                fout.write(json_str)        
 
     def get_timestamp(self):
         data = self.telemetry_report
