@@ -24,6 +24,7 @@ datasets==4.0.0
 dill==0.3.8
 dotenv==0.9.9
 drain3==0.9.11
+et_xmlfile==2.0.0
 filelock==3.18.0
 Flask==3.1.1
 fonttools==4.59.0
@@ -57,6 +58,7 @@ networkx==3.2.1
 nltk==3.9.1
 numba==0.60.0
 numpy==1.26.4
+openpyxl==3.1.5
 optuna==4.4.0
 packaging==25.0
 pandas==2.3.1

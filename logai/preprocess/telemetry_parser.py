@@ -200,6 +200,13 @@ class Telemetry2Parser:
                 DATA_LIST.append(data)
 
         telemetry_report = pd.concat(DATA_LIST)
+        excel_path = os.path.join(TELEMETRY_PROFILES, "Telemetry2_report.xlsx")
+        try:
+            with pd.ExcelWriter(excel_path) as writer:
+                telemetry_report.to_excel(writer)
+        except Exception as e:
+            print("Excepton occured ", e)
+
         #print(telemetry_report.columns)
         self.telemetry_report = telemetry_report
 
