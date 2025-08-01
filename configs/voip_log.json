@@ -1,10 +1,9 @@
 {
-
   "data_loader_config": {
     "infer_datetime": true,
     "datetime_format": "%Y-%m-%dT%H:%M:%S",
     "reader_args": {
-      "log_format": "<DateTime> <project> <Level> <pid> <Content>"
+      "log_format": "<DateTime> <project> <Level> <ErrorCode> <Content>"
     },
     "dimensions": {
       "timestamp": ["DateTime"],
@@ -16,8 +15,7 @@
     "custom_delimiters_regex":[],
     "custom_replace_list": {
       "^([\\d\\-\\d\\-\\w:\\d:\\d]+)": "<DateTime>",
-      "IPV6PRIVACY\\.([\\w]+)": "<Level>",
-      "tid=\\d+\\]\\s*(.*)$": "<Content>"
+      "VOIP\\.([\\w]+)": "<Level>"
     }
   },
    "log_parser_config": {
