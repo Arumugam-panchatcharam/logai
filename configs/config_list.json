@@ -61,9 +61,9 @@
             "supported_files": ["wifi_vendor_hostapd"]
         },
         {
-            "name": "Telemetry",
-            "supported_config": "telemetry.json",
-            "supported_files": ["telemetry"]
+            "name": "Telemetry_2",
+            "supported_config": "telemetry2.json",
+            "supported_files": ["telemetry2_0"]
         },
         {
             "name": "TelcoVoiceManager",

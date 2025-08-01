@@ -10,6 +10,8 @@ import base64
 import shutil
 import tarfile
 import json
+import re
+from collections import defaultdict
 from dataclasses import dataclass
 from dash import html
 from urllib.parse import quote as urlquote
@@ -103,7 +105,7 @@ class FileManager:
         self._merge_files(temp_dir, output_dir=os.path.join(self.directory, "merged_logs"))
         # remove temporary directory
         shutil.rmtree(temp_dir)
-
+    """
     def _merge_files(self,temp_dir, output_dir="./merged_logs"):
         os.makedirs(output_dir, exist_ok=True)
         folder_path = temp_dir
@@ -142,7 +144,100 @@ class FileManager:
                     #message = "****Merging " + in_file + " **********\n"
                     #wr.write(message.encode("utf-8"))
                     shutil.copyfileobj(rd, wr)
+    """
+    def _merge_files(self, temp_dir, output_dir="./merged_logs"):
+        os.makedirs(output_dir, exist_ok=True)
+        folder_path = temp_dir
+        folders = os.listdir(folder_path)
+        folders.sort()
+ 
+        # ----------- Stage 1: Initial merge by normalized name -----------
+        for dirname in folders:
+            content = os.path.join(folder_path, dirname)
+            dirs = os.listdir(content)
+            if len(dirs) == 1:
+                in_path = os.path.join(content, dirs[0])
+            else:
+                in_path = content
+ 
+            for in_filename in os.listdir(in_path):
+                if "2023" not in in_filename and "2024" not in in_filename and "2025" not in in_filename:
+                    out_filename = in_filename
+                else:
+                    out_filename = in_filename[19:]
+                    if "024-" in out_filename:
+                        out_filename = in_filename[37:]
+                    if "1_" in out_filename:
+                        out_filename = out_filename[2:]
+                    if out_filename and out_filename[0] in "0123456789_":
+                        out_filename = out_filename[1:]
+ 
+                out_file = os.path.join(output_dir, out_filename)
+                in_file = os.path.join(in_path, in_filename)
+ 
+                with open(in_file, "rb") as rd, open(out_file, "ab") as wr:
+                    shutil.copyfileobj(rd, wr)
+ 
+        # ----------- Stage 2: Merge rotated logs and delete originals -----------
+        merged_files = os.listdir(output_dir)
+        base_map = defaultdict(list)
+ 
+        for filename in merged_files:
+            match = re.match(r"(.+?)(?:\.(\d+))?$", filename)
+            if match:
+                base_name = match.group(1)
+                base_map[base_name].append(filename)
+ 
+        for base_name, versions in base_map.items():
+            if len(versions) <= 1:
+                continue
+ 
+            def suffix_key(f):
+                m = re.search(r"\.(\d+)$", f)
+                return int(m.group(1)) if m else -1
+ 
+            versions.sort(key=suffix_key)
+            merged_path = os.path.join(output_dir, base_name + "_final_merged.log")
+ 
+            with open(merged_path, "wb") as wr:
+                for version in versions:
+                    full_path = os.path.join(output_dir, version)
+                    with open(full_path, "rb") as rd:
+                        shutil.copyfileobj(rd, wr)
+                    os.remove(full_path)
+ 
+            #print(f"Merged and cleaned: {versions} -> {merged_path}")
+ 
+        # ----------- Stage 3: Sort _final_merged.log files by timestamp string -----------
+        for filename in os.listdir(output_dir):
+            if filename.endswith("_final_merged.log"):
+                file_path = os.path.join(output_dir, filename)
+                try:
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                        lines = f.readlines()
+ 
+                    def extract_ts_str(line: str):
+                        parts = line.split()
+                        return parts[0] if parts else ""
+ 
+                    lines.sort(key=extract_ts_str)
+ 
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.writelines(lines)
+ 
+                    #print(f"Sorted by timestamp string: {filename}")
+                except Exception as e:
+                    print(f"Error sorting {filename}: {e}")
 
+        for filename in os.listdir(output_dir):
+            if filename.endswith("_final_merged.log"):
+                file_path = os.path.join(output_dir, filename)
+                base_fname = os.path.basename(file_path)
+                remove_tag = base_fname.replace("_final_merged.log", "")
+                new_file_name = os.path.join(output_dir, remove_tag)
+                #print("file {} rename to {} \n".format(file_path, new_file_name))
+                os.rename(file_path, new_file_name)
+    
     def clean_temp_files(self):
         for name in os.listdir(self.directory):
             full_path = os.path.join(self.directory, name)
@@ -179,7 +274,7 @@ class FileManager:
             if self.config_index:
                 file_config = self.config_index.find_config_for_file(filename)
                 self.config_path = os.path.join(root_dir, "../configs", file_config)
-                #print("config {}, path {}".format(self.config, self.config_path))
+                #print("config {}, path {}".format(file_config, self.config_path))
                 if os.path.exists(self.config_path):
                     try:
                          with open(self.config_path, 'r') as f:
