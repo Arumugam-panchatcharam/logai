@@ -19,6 +19,7 @@ from logai.preprocess.telemetry_parser import Telemetry2Parser
 from logai.preprocess.telemetry_parser import DML
 
 telemetry_parser = Telemetry2Parser()
+file_manager = FileManager()
 
 def create_summary_layout(data=pd.DataFrame()):
     mac = telemetry_parser.get_telemetry_value(DML.MAC_ADDRESS)
@@ -236,19 +237,16 @@ def create_radio_stat_graph_layout(data):
         Input("telemetry-btn", "n_clicks"),
         Input("telemetry_exception_modal_close", "n_clicks"),
     ],
-    [
-        State("file-select", "value"),
-    ],
 )
 def click_run(
-    btn_click, modal_close, filename
+    btn_click, modal_close
 ):
     ctx = dash.callback_context
     try:
         if ctx.triggered:
             prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+            #print(prop_id)
             if prop_id == "telemetry-btn":
-                file_manager = FileManager()
                 filename = "telemetry2_0"
                 config_json = file_manager.load_config(filename)
                 #print(config_json, flush=True)

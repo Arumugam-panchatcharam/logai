@@ -12,7 +12,6 @@ from .utils import (
     create_modal,
     create_description_card,
     create_upload_file_layout,
-    create_file_setting_layout,
     create_run_button
 )
 
@@ -22,7 +21,7 @@ def create_control_card():
         id="control-card",
         children=[
             create_upload_file_layout(),
-            create_file_setting_layout(),
+            #create_file_setting_layout(),
             html.Hr(),
             create_run_button("telemetry-btn"),
             create_modal(
