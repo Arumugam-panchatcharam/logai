@@ -202,6 +202,37 @@ def create_pattern_layout():
                             id="result_table_card",
                             style={"maxwidth": "900px"},
                         ),
+                        html.B("Total Charts"),
+                        html.Hr(),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    dbc.Card(
+                                        dbc.CardBody(
+                                            [
+                                                dcc.Loading(
+                                                    [
+                                                        dcc.Graph(id="pattern-graph_total"),
+                                                    ]
+                                                )
+                                            ]
+                                        )
+                                    ),
+                                    width=12,
+                                ),
+                            ],
+                        ),
+                        html.B("Cluster template"),
+                        html.Hr(),
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    html.Div(
+                                        id="cluster-tmp",
+                                    )
+                                ],
+                            ),
+                        ),
                     ]
                 )
             ),

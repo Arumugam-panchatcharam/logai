@@ -5,11 +5,17 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 #
+import csv
+import logging
 import os
+import re
+import sys
 import dash
+from flask import app
 import pandas as pd
 import plotly.express as px
-
+from drain3 import TemplateMiner
+from drain3.template_miner_config import TemplateMinerConfig
 from dash import html, Input, Output, State, callback, dash_table
 
 from logai.applications.application_interfaces import (
@@ -27,7 +33,6 @@ from logai.dataloader.openset_data_loader import (
 from ..pages.utils import create_param_table
 
 log_pattern_demo = LogPattern()
-
 def _config_sample():
     config = WorkFlowConfig(
         data_loader_config=FileDataLoader(),
@@ -57,14 +62,6 @@ def create_attribute_component(attributes):
         },
         style_header_conditional=[{"textAlign": "left"}],
         style_cell_conditional=[{"textAlign": "left"}],
-        style_header={
-            'backgroundColor': 'rgb(50, 50, 50)',
-            'color': 'black'
-        },
-        style_data={
-            'backgroundColor': 'white',
-            'color': 'black'
-        },
     )
     return html.Div(children=[table, html.Div(id="table-dropdown-container")])
 
@@ -193,14 +190,6 @@ def update_dynamic_lists(data):
             sort_action="native",
             sort_mode="multi",
             column_selectable="single",
-            style_header={
-                'backgroundColor': 'rgb(50, 50, 50)',
-                'color': 'white'
-            },
-            style_data={
-                'backgroundColor': 'white',
-                'color': 'black'
-            },
         )
     else:
         return dash_table.DataTable()
@@ -229,14 +218,6 @@ def update_logline(data):
             page_action="native",
             page_size=20,
             page_current=0,
-            style_header={
-                'backgroundColor': 'rgb(50, 50, 50)',
-                'color': 'black'
-            },
-            style_data={
-                'backgroundColor': 'white',
-                'color': 'black'
-            },
         )
     else:
         return dash_table.DataTable()
@@ -275,6 +256,7 @@ def update_summary_graph(data):
     [Input("summary-scatter", "clickData"), Input("time-interval", "value")],
     prevent_initial_call=True,
 )
+
 def update_y_timeseries(data, interval):
     #print(data)
     if not data:
@@ -286,7 +268,7 @@ def update_y_timeseries(data, interval):
     dff = result_df[result_df["parsed_logline"] == pattern][
         ["timestamp", "parsed_logline"]
     ]
-    print(dff)
+    #print(dff)
     ts_df = (
         dff[["timestamp", "parsed_logline"]]
         .groupby(pd.Grouper(key="timestamp", freq=freq, offset=0, label="right"))
@@ -350,3 +332,154 @@ def select_parsing_algorithm(algorithm):
         param_info = log_pattern_demo.get_parameter_info(algorithm)
     param_table = create_param_table(param_info)
     return param_table
+
+
+def combine_logs_by_timestamp(input_folder, output_log_path):
+    """
+    Combines log lines from all files in input_folder.
+    Lines with valid timestamps are sorted by timestamp.
+    Lines without timestamps are appended at the end.
+    """
+    timestamp_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
+    lines_with_ts = []
+    lines_without_ts = []
+
+    for root, _, files in os.walk(input_folder):
+        for file in files:
+            full_path = os.path.join(root, file)
+            try:
+                with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        match = timestamp_pattern.match(line)
+                        if match:
+                            lines_with_ts.append((match.group(), line))
+                        else:
+                            lines_without_ts.append(line)
+            except Exception:
+                continue  # Skip unreadable files
+
+    # Sort by timestamp
+    lines_with_ts.sort(key=lambda x: x[0])
+
+    # Write sorted + unsorted lines to output
+    with open(output_log_path, 'w', encoding='utf-8') as out_file:
+        for _, line in lines_with_ts:
+            out_file.write(line + "\n")
+        for line in lines_without_ts:
+            out_file.write(line + "\n")
+
+    return output_log_path
+
+
+def process_with_drain3(input_log_file, output_csv_path):
+
+    logging.basicConfig(stream=sys.stdout, level=logging.WARNING)
+
+    config = TemplateMinerConfig()
+    # Optional: comment out or fix config.load if it causes issues
+    print("before config load")
+    config.load("./gui/assets/drain3.ini")
+    print("after config load")
+    config.profiling_enabled = False
+    config.snapshot_interval_minutes = 0  # Disable snapshotting
+    config.save_snapshot = False
+    template_miner = TemplateMiner(config=config)
+    
+
+    timestamp_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
+    processed = []
+
+    with open(input_log_file, 'r', encoding='utf-8', errors='ignore') as f:
+        for idx, line in enumerate(f, 1):
+            line = line.strip()
+            if not line: continue
+            match = timestamp_pattern.match(line)
+            timestamp = match.group() if match else ""
+            result = template_miner.add_log_message(line)
+            if result:
+                processed.append({
+                    "timestamp": timestamp,
+                    "cluster_id": result["cluster_id"],
+                    "template": result["template_mined"],
+                    "log": line
+                })
+            if idx % 1000 == 0:
+                print(f"Processed {idx} lines...")
+    print(f"Done: processed {len(processed)} lines. Now writing CSV.")
+
+    with open(output_csv_path, 'w', newline='', encoding='utf-8') as cf:
+        writer = csv.DictWriter(cf, fieldnames=["timestamp", "cluster_id", "template", "log"])
+        writer.writeheader()
+        for row in processed:
+            writer.writerow(row)
+
+    print("CSV written:", output_csv_path)
+
+
+
+
+@callback(
+Output("pattern-graph_total", "figure"),
+#Output("status-msg", "children"),
+[
+Input("pattern-btn-all", "n_clicks"),
+Input("pattern_exception_modal_close", "n_clicks"),
+],
+prevent_initial_call=True
+)
+def on_run_click(n_clicks, modal_close):
+    try:
+        file_manager = FileManager()
+         # The folder with uploaded logs
+        output_log_path = os.path.join(file_manager.merged_logs_path, 'combined.log')  # Combined output log
+        output_csv_path = os.path.join(file_manager.merged_logs_path, 'processed.csv') # Drain3 output CSV
+        # Step 1: Combine logs or do pre-processing
+        print("Combining logs from:", file_manager.merged_logs_path)
+        combine_logs_by_timestamp(file_manager.merged_logs_path,output_log_path)# e.g., combine logs
+
+        # Step 2: Run Drain3 or pattern mining
+        print("Processing logs with Drain3...")
+        process_with_drain3(output_log_path,output_csv_path) # generates "processed.csv"
+
+        # Step 3: Load resulting CSV
+        df = pd.read_csv(output_csv_path)
+        print("read csv.")
+        # Example: Plot count of logs per template
+        fig = px.scatter(df, x="cluster_id",title="Log Template Frequency",custom_data=["cluster_id", "template", "log"])
+        print("Plotting done.")
+        return fig 
+    
+
+    except Exception as e:
+        return dash.no_update, f"❌ Error: {str(e)}"    
+    
+@callback(
+    Output("cluster-tmp", "children"),
+    Input("pattern-graph_total", "clickData"),
+    prevent_initial_call=True
+    )
+
+def show_cluster_details(clickData):
+        if not clickData or "points" not in clickData:
+            return "No data selected."
+        point = clickData["points"][0]
+        # customdata = [cluster_id, template, log]
+        if "customdata" in point and point["customdata"]:
+            cluster_id, template, log = point["customdata"]
+            return html.Div([
+                html.H4(f"Cluster ID: {cluster_id}"),
+                html.B("Template: "), html.Pre(template, style={"whiteSpace": "pre-wrap"}), html.Br(),
+                html.B("Log: "), html.Pre(log, style={"whiteSpace": "pre-wrap"}),
+            ], style={'backgroundColor': '#FFFFFF', 'padding': '1em', 'borderRadius': '10px'})
+        else:
+            return html.Div([
+            "No cluster data found in selection.",
+            html.Pre(str(point), style={"color": "crimson", "fontSize": "smaller"})
+             ])
+
+    
+
+			
