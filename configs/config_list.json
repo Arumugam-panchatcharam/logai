@@ -41,26 +41,6 @@
             "supported_files": ["WiFiLog"]
         },
         {
-            "name": "WiFi_vendor_app_log",
-            "supported_config": "wifi_vendor_app_log.json",
-            "supported_files": ["wifi_vendor_apps"]
-        },
-        {
-            "name": "WiFi_vendor_hal_log",
-            "supported_config": "wifi_vendor_hal_log.json",
-            "supported_files": ["wifi_vendor_hal"]
-        },
-        {
-            "name": "WiFi_vendor_driver_log",
-            "supported_config": "wifi_vendor_driver_log.json",
-            "supported_files": ["wifi_vendor_driver"]
-        },
-        {
-            "name": "WiFi_vendor_hostapd_log",
-            "supported_config": "wifi_vendor_hostapd_log.json",
-            "supported_files": ["wifi_vendor_hostapd"]
-        },
-        {
             "name": "Telemetry_2",
             "supported_config": "telemetry2.json",
             "supported_files": ["telemetry2_0"]

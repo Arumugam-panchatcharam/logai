@@ -149,17 +149,13 @@ class FileDataLoader:
                             )
                         selected.columns = [constants.LOG_TIMESTAMPS]
                         if self.config.infer_datetime and self.config.datetime_format:
-                            datetime_format = self.config.datetime_format
-                            
-                            try:
-                                #print("selected \n", selected[constants.LOG_TIMESTAMPS])  
-                                infer_date_time = pd.to_datetime(
-                                    selected[constants.LOG_TIMESTAMPS],
-                                    format=datetime_format,
-                                )
-                                selected[constants.LOG_TIMESTAMPS] = infer_date_time.loc[0].copy()
-                            except Exception as e:
-                                print("Log Parsing line", selected[constants.LOG_TIMESTAMPS])
+                            datetime_format = self.config.datetime_format  
+                            selected[constants.LOG_TIMESTAMPS] = pd.to_datetime(
+                                selected[constants.LOG_TIMESTAMPS],
+                                format=datetime_format,
+                                errors="coerce"
+                            )
+                            selected = selected[selected[constants.LOG_TIMESTAMPS].notna()]
 
                     setattr(log_record, field, selected)
         # log_record.__post_init__()
