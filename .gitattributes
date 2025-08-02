@@ -1,1 +1,11 @@
 gui/assets/TinyLlama-1.1B-Chat-v1.0/ filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0 filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/special_tokens_map.json filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/tokenizer_config.json filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/tokenizer.json filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/tokenizer.model filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/model.safetensors filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/config.json filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/eval_results.json filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/generation_config.json filter=lfs diff=lfs merge=lfs -text
+gui/assets/TinyLlama-1.1B-Chat-v1.0/README.md filter=lfs diff=lfs merge=lfs -text
