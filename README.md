@@ -15,7 +15,7 @@
 - [Getting Started](#getting-started)
   - [Installation](#installation)
   - [Explore RDK\_One3B GUI Portal](#explore-rdk_one3b-gui-portal)
-    - [Log Summarization](#log-summarization)
+    - [Landing Page](#landing-page)
     - [Log Parsing](#log-parsing)
     - [Log Clustering](#log-clustering)
     - [Log Anomaly Detection](#log-anomaly-detection)
@@ -53,7 +53,7 @@ Then open the RDK_One3B App via http://localhost:8050/ or http://127.0.0.1:8050/
 
 ## Explore RDK_One3B GUI Portal
 
-### Log Summarization
+### Landing Page
 We use the various values obtained through telemetry, such as `SSID.Status`, `Radio.Status`, etc., to summarise what state the device has been in the last few hours as per the logs obtained.
 ![landing_page](img/RDK_One3B_LandingPage.png)
 
@@ -72,7 +72,7 @@ We form clusters for the various logs present under rdklogs with the help of dra
 ### Log Anomaly Detection
 After parsing, the logs are transformed into a feature-rich format using template frequency, token-level statistics, temporal features and metadata (e.g., source, severity, etc.). This prepares the data for classification and clustering algorithms.
 
-![landing_page](img/RDK_One3B_LogSummarization.png)
+![landing_page](img/RDK_One3B_LogAnomalyDetection.png)
 
 ### Log Report with LLaMa
 Using LLaMA (a large language model), the pipeline generates natural language **summaries** of anomaly clusters, **explanations** of complex or unknown logs and AI-powered insights for DevOps or security teams

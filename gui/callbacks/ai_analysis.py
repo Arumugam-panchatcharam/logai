@@ -10,7 +10,7 @@ from gui.diagnose_broadband import run_diagnosis
 )
 def run_ai_script(n_clicks):
     result = run_diagnosis(
-        model_dir="/Users/sivasubramanianm/Downloads/HackFest-06/Training/models/TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        model_dir="gui/assets/TinyLlama-1.1B-Chat-v1.0",
         test_file="app_uploaded_files/telemetry/Telemetry2_report.xlsx",
         column_file="column_list.txt"
     )
