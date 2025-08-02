@@ -54,23 +54,28 @@ Then open the RDK_One3B App via http://localhost:8050/ or http://127.0.0.1:8050/
 ## Explore RDK_One3B GUI Portal
 
 ### Log Summarization
-
-![landing_page](img/RDK_One3B_LandingPage)
+We use the various values obtained through telemetry, such as `SSID.Status`, `Radio.Status`, etc., to summarise what state the device has been in the last few hours as per the logs obtained.
+![landing_page](img/RDK_One3B_LandingPage.png)
 
 ### Log Parsing
+**Drain3** uses a tree-based algorithm to extract structured **log templates** from raw log messages. This reduces high-cardinality logs into generalized patterns. After parsing, the logs are transformed into a feature-rich format using template frequency, token-level statistics, temporal features and metadata (e.g., source, severity, etc.). This prepares the data for classification and clustering algorithms.    
 
-![landing_page](img/RDK_One3B_LogParsing)
+We parse the various logs present under rdklogs with the help of drain3 to see what logs have been occurring the most frequently in the last few hours on the device. It is done on a single file basis here.
+![landing_page](img/RDK_One3B_LogParsing.png)
 
 ### Log Clustering
-
-![landing_page](img/RDK_One3B_LogClustering)
+**TensorFlow Decision Forests** (TF-DF) is used to train a supervised model on labeled logs. It's a scalable, interpretable tree-based model ideal for classifying logs into categories like `INFO`, `ERROR`, `SECURITY_ALERT` and detecting known failure types or operational events
+ 
+We form clusters for the various logs present under rdklogs with the help of drain3 to see what log patterns have been occurring the most frequently in the last few hours on the device. It is done on both a single file and multi file basis here.
+![landing_page](img/RDK_One3B_LogClustering.png)
 
 ### Log Anomaly Detection
+After parsing, the logs are transformed into a feature-rich format using template frequency, token-level statistics, temporal features and metadata (e.g., source, severity, etc.). This prepares the data for classification and clustering algorithms.
 
-![landing_page](img/RDK_One3B_LogSummarization)
+![landing_page](img/RDK_One3B_LogSummarization.png)
 
 ### Log Report with LLaMa
-
+Using LLaMA (a large language model), the pipeline generates natural language **summaries** of anomaly clusters, **explanations** of complex or unknown logs and AI-powered insights for DevOps or security teams
 
 ## Reference
  [Salesforce LogAI](https://github.com/salesforce/logai) A Library for Log Analytics and Intelligence
