@@ -1,0 +1,7 @@
+Report.Time
+Report.mac
+Report.Device.WiFi.SSID.1.Status
+Report.Device.WiFi.Radio.1.Status
+Report.Device.WiFi.SSID.2.Status
+Report.Device.WiFi.Radio.2.Status
+
