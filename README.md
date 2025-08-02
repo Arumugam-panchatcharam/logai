@@ -4,7 +4,7 @@ AI-Powered Fault Detection, Prediction and Auto-Healing for Home connectivity
 
 <p align="center">
     <br>
-    <img src="./img/logai_logo.jpg" width="400"/>
+    <img src="./img/logai_logo.png" width="400"/>
     </br>
 </p>
 
