@@ -149,6 +149,14 @@ def create_menu():
                     style={"font-weight": "bold", "text-decoration": "underline"},
                 )
             ),
+            dbc.Row(
+                dcc.Link(
+                    "AI Analysis",
+                    href="/logai/ai_analysis",
+                    className="tab fourth",
+                    style={"font-weight": "bold", "text-decoration": "underline"},
+                )
+            ),
         ],
     )
     return menu
