@@ -1,11 +1,11 @@
 # RDK_One3B
-AI-Powered Fault Detection, Prediction and Auto-Healing for Home connectivity
-
-
 <p align="center">
     <br>
-    <img src="./img/logai_logo.png" width="400"/>
+    <img src="./img/logai_logo.png" width="250"/>
     </br>
+    <p align="center">
+    AI-Powered Fault Detection, Prediction and Auto-Healing for Home connectivity
+    </p>
 </p>
 
 ## Table of Contents
