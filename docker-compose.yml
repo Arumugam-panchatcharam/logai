@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  rdk-logai-app:
+    build: .
+    image: logai-app:1.0
+    volumes:
+      - .:/app
+      - /opt/logai:/opt/
+    ports:
+      - "40601:40601"
+    environment:
+      - PYTHONPATH="/home/arumugam/LOGAI/logai"
+      - PYTHONUNBUFFERED=1
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8061:80" # host:container
+    depends_on:
+      - rdk-logai-app
+    restart: always

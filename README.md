@@ -20,6 +20,7 @@
     - [Log Clustering](#log-clustering)
     - [Log Anomaly Detection](#log-anomaly-detection)
     - [Log Report with LLaMa](#log-report-with-llama)
+    - [Dockerization](#dockerization)
   - [Reference](#reference)
   - [License](#license)
 
@@ -31,8 +32,8 @@
 ```shell
 
 # Check out rdk_one3b code repo from Github
-git clone https://git.yo-digital.com/hackfest6/rdk-one3b.git
-cd rdk-one3b
+git https://github.com/Arumugam-panchatcharam/logai.git
+cd logai
 
 # [Optional] Create virtual environment
 python3 -m venv venv
@@ -76,6 +77,34 @@ After parsing, the logs are transformed into a feature-rich format using templat
 
 ### Log Report with LLaMa
 Using LLaMA (a large language model), the pipeline generates natural language **summaries** of anomaly clusters, **explanations** of complex or unknown logs and AI-powered insights for DevOps or security teams
+
+### Dockerization
+Build & Run the docker image
+```shell
+#Run in Detached mode
+docker-compose up --build -d 
+
+#Stop the Docker container
+docker-compose down
+```
+Add Systemctl service
+
+```shell
+# copy the service file
+sudo cp rdk-logai.service /etc/systemd/system/rdk-logai.service
+
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Enable service at boot
+sudo systemctl enable rdk-logai
+
+# Start manually now
+sudo systemctl start rdk-logai
+
+# Check logs
+journalctl -u rdk-logai -f
+```
 
 ## Reference
  [Salesforce LogAI](https://github.com/salesforce/logai) A Library for Log Analytics and Intelligence
