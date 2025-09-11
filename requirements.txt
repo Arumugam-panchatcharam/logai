@@ -4,6 +4,7 @@ aiosignal==1.4.0
 alembic==1.16.4
 async-timeout==5.0.1
 attrs==25.3.0
+bcrypt==4.3.0
 blinker==1.9.0
 cachetools==4.2.1
 category-encoders==2.6.4
@@ -27,6 +28,9 @@ drain3==0.9.11
 et_xmlfile==2.0.0
 filelock==3.18.0
 Flask==3.1.1
+Flask-Bcrypt==1.0.1
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
 fonttools==4.59.0
 frozenlist==1.7.0
 fsspec==2025.3.0
@@ -106,4 +110,3 @@ wrapt==1.17.2
 xxhash==3.5.0
 yarl==1.20.1
 zipp==3.23.0
-gunicorn
