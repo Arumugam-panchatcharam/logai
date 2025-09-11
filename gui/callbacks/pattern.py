@@ -5,11 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 #
-import csv
-import logging
 import os
-import re
-import sys
 import dash
 from flask import app
 import pandas as pd
@@ -17,6 +13,8 @@ import plotly.express as px
 from drain3 import TemplateMiner
 from drain3.template_miner_config import TemplateMinerConfig
 from dash import html, Input, Output, State, callback, dash_table
+from flask import send_from_directory
+from logai.utils.constants import UPLOAD_DIRECTORY
 
 from logai.applications.application_interfaces import (
     WorkFlowConfig,
@@ -100,6 +98,40 @@ def get_attributes(log_type):
     values = [str(c) for c in attributes]
     return options, values
 """
+"""
+@callback(
+    Output("pattern_exception_modal", "is_open"),
+    Output("pattern_exception_modal_content", "children"),
+    [
+        Input("pattern-dwld", "n_clicks"),
+        Input("pattern_exception_modal_close", "n_clicks"),
+    ],
+)
+def click_download(
+    btn_click, modal_close,
+):
+    ctx = dash.callback_context
+    try:
+        if ctx.triggered:
+            prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+            if prop_id == "pattern-dwld":
+                file_manager = FileManager()
+                file_manager.download_file()
+                send_from_directory(
+                    directory=file_manager.directory,
+                    path="mergedlog.zip",
+                    as_attachment=True,
+                )
+                return False, ""
+            elif prop_id == "pattern_exception_modal_close":
+                return False, ""
+        # If no button was clicked, return False to keep the modal closed
+        # and an empty string for the content
+        else:
+            return False, ""
+    except Exception as error:
+        return True, str(error)
+"""
 
 @callback(
     Output("attribute-options", "children"),
@@ -107,6 +139,7 @@ def get_attributes(log_type):
     Output("pattern_exception_modal_content", "children"),
     [
         Input("pattern-btn", "n_clicks"),
+        Input("pattern-dwld", "n_clicks"),
         Input("pattern_exception_modal_close", "n_clicks"),
     ],
     [
@@ -114,7 +147,7 @@ def get_attributes(log_type):
     ],
 )
 def click_run(
-    btn_click, modal_close, filename
+    ptrn_btn_click, dwld_btn_click, modal_close, filename
 ):
     ctx = dash.callback_context
     try:
@@ -145,6 +178,15 @@ def click_run(
                     False,
                     "",
                 )
+            elif prop_id == "pattern-dwld":
+                file_manager = FileManager()
+                file_manager.download_file()
+                send_from_directory(
+                    directory=UPLOAD_DIRECTORY,
+                    path=os.path.join(UPLOAD_DIRECTORY, "mergedlogs.zip"),
+                    as_attachment=True,
+                )
+                return html.Div(), False, ""
             elif prop_id == "pattern_exception_modal_close":
                 return html.Div(), False, ""
         else:

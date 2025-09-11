@@ -11,8 +11,9 @@ from dash import dcc, html
 from .utils import (
     create_modal,
     create_description_card,
-    create_upload_file_layout,
-    create_run_button
+    create_telemetry_upload_file_layout,
+    create_run_button,
+    create_process_select_layout
 )
 
 
@@ -20,7 +21,7 @@ def create_control_card():
     return html.Div(
         id="control-card",
         children=[
-            create_upload_file_layout(),
+            create_telemetry_upload_file_layout(),
             #create_file_setting_layout(),
             html.Hr(),
             create_run_button("telemetry-btn"),
@@ -49,22 +50,6 @@ def create_timeseries_grapy_layout():
 def create_telemetry_layout():
     return dbc.Row(
         [
-            # Left column
-            dbc.Col(
-                html.Div(
-                    [
-                        create_description_card(),
-                        create_control_card(),
-                        html.Div(
-                            ["initial child"],
-                            id="output-clientside",
-                            style={"display": "none"},
-                        ),
-                    ]
-                ),
-                width=2,
-            ),
-            # Right column
             dbc.Col(
                 html.Div(
                     [
@@ -83,7 +68,38 @@ def create_telemetry_layout():
                             ],
                         ),
                         html.Hr(),
-                        dbc.Row([
+                        dbc.Row(
+                            [
+                                dbc.Card(
+                                    dbc.CardBody(
+                                        [
+                                            dcc.Loading(
+                                                id="process-table-load",
+                                                children=[
+                                                    dbc.Row(
+                                                        dbc.Col(html.Div(id="process-table"))
+                                                    )
+                                                ],
+                                                type="default",
+                                            )
+                                        ]
+                                    ),
+                                    id="process_table_card",
+                                    style={"maxwidth": "900px"},
+                                ),
+                            ],
+                        ),
+                    ]
+                )
+            ),
+        ]
+    )
+
+
+layout = create_telemetry_layout()
+
+"""
+dbc.Row([
                             dbc.Col(dbc.Card([
                                     dbc.CardHeader("Memory Split"),
                                     dbc.CardBody(id="mem-chart-card", children=html.Div("Click 'Run' to load chart."))
@@ -104,11 +120,4 @@ def create_telemetry_layout():
                                     dbc.CardBody(id="radio-stat-chart-card", children=html.Div("Click 'Run' to load chart."))
                                 ]), width=6),
                         ])
-                    ]
-                )
-            ),
-        ]
-    )
-
-
-layout = create_telemetry_layout()
+"""

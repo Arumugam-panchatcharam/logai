@@ -16,7 +16,12 @@ from dataclasses import dataclass
 from dash import html
 from urllib.parse import quote as urlquote
 
-from logai.utils.constants import UPLOAD_DIRECTORY, MERGED_LOGS_DIRECTORY
+from logai.utils.constants import (
+    BASE_DIR, 
+    MERGED_LOGS_DIR_NAME,
+    MERGED_LOGS_ARCHIVE_NAME,
+    TELEMETRY_PROFILES_DIR_NAME
+)
 
 from typing import List, Optional, Tuple, Dict, Any
 
@@ -51,14 +56,11 @@ class ConfigIndex:
 class FileManager:
     """Processor for handling uploaded files in the application."""
     def __init__(self):
-        self.directory = UPLOAD_DIRECTORY
-        self.merged_logs_path = MERGED_LOGS_DIRECTORY
-        #self.base_directory = path
-        if not os.path.exists(self.directory):
-            os.makedirs(self.directory)
-        
-        if not os.path.exists(self.merged_logs_path):
-            os.makedirs(self.merged_logs_path)
+        self.directory = None
+        self.merged_logs_path = None
+
+        #os.makedirs(self.directory, exist_ok=True)
+        #os.makedirs(self.merged_logs_path, exist_ok=True)
 
     # === Save uploaded file to local folder ===
     def save_file(self, name, content):
@@ -80,21 +82,45 @@ class FileManager:
             if os.path.isfile(path):
                 files.append(filename)
         return files
+    
+    def create_merged_logs_archive(self, project_name, project_path, merged_logs_path, telemetry_path):
+        if not os.listdir(merged_logs_path):
+            return
+        if os.path.exists(telemetry_path) and len(os.listdir(telemetry_path)) > 0:
+            # Copy the first telemetry profile to the merged logs directory
+            telemetry_report_path = os.path.join(telemetry_path, "Telemetry2_report.xlsx")
+            copyto_path = os.path.join(merged_logs_path, "Telemetry2_report.xlsx")
+            if os.path.exists(os.path.join(telemetry_path, "Telemetry2_report.xlsx")):
+                shutil.copyfile(telemetry_report_path, copyto_path)
+            else:
+                print("Telemetry2_report.xlsx not found in TELEMETRY_PROFILES.")
+
+        archive = MERGED_LOGS_ARCHIVE_NAME + "-" + str(project_name)
+        # Create a zip file of the merged logs directory
+        shutil.make_archive(os.path.join(project_path, archive), 'zip', os.path.join(merged_logs_path))
 
     def file_download_link(self, filename):
         location = "/download/{}".format(urlquote(filename))
         return html.A(filename, href=location)
     
-    def process_uploaded_files(self):
+    def process_uploaded_files(self, project_path, project_name):
         """Process uploaded files by extracting and merging logs."""
+        self.directory = project_path
         if not os.path.exists(self.directory):
-            raise FileNotFoundError(f"Upload directory '{self.path}' does not exist.")
+            raise FileNotFoundError(f"Upload directory '{self.directory}' does not exist.")
+        
+        self.merged_logs_path = os.path.join(self.directory, MERGED_LOGS_DIR_NAME)
+        self.telemetry_path = os.path.join(self.directory, TELEMETRY_PROFILES_DIR_NAME)
+        os.makedirs(self.merged_logs_path, exist_ok=True)
+
+        print(f"Processing uploaded files in {self.directory} ...")
         
         # Create a temporary directory for extraction
         temp_dir = os.path.join(self.directory, "temp")
         os.makedirs(temp_dir, exist_ok=True)
-        
         for file in os.listdir(self.directory):
+            if os.path.isdir(os.path.join(self.directory,file)):
+                continue
             filename = file.lower()
             if filename.endswith(".tgz") or filename.endswith(".tar.gz"):
                 src_file = os.path.join(self.directory, file)
@@ -103,14 +129,25 @@ class FileManager:
                 os.makedirs(dest, exist_ok=True)
                 with tarfile.open(src_file, "r:gz") as tar:
                     tar.extractall(path=dest)
+            else:
+                shutil.move(os.path.join(self.directory, file), os.path.join(self.merged_logs_path, file))
         
-        self._merge_files(temp_dir, output_dir=os.path.join(self.directory, "merged_logs"))
+        self._merge_files(temp_dir, output_dir=self.merged_logs_path)
+        self.clean_temp_files()
         # remove temporary directory
         shutil.rmtree(temp_dir)
 
         # Extract Telemetry Profiles
         temp_telemetry_parser = Telemetry2Parser()
-        temp_telemetry_parser.extract_telemetry_reports()
+        temp_telemetry_parser.extract_telemetry_reports(project_path=self.directory)
+        temp_telemetry_parser.start_processing()
+
+        self.create_merged_logs_archive(project_name=project_name,
+                                        project_path=self.directory, 
+                                        merged_logs_path=self.merged_logs_path, 
+                                        telemetry_path=self.telemetry_path)
+        
+        print("Process uploaded files done")
     """
     def _merge_files(self,temp_dir, output_dir="./merged_logs"):
         os.makedirs(output_dir, exist_ok=True)
@@ -152,7 +189,10 @@ class FileManager:
                     shutil.copyfileobj(rd, wr)
     """
     def _merge_files(self, temp_dir, output_dir="./merged_logs"):
-        os.makedirs(output_dir, exist_ok=True)
+        # Check if directory empty
+        if not os.listdir(temp_dir):
+            return
+        
         folder_path = temp_dir
         folders = os.listdir(folder_path)
         folders.sort()
@@ -247,9 +287,7 @@ class FileManager:
     def clean_temp_files(self):
         for name in os.listdir(self.directory):
             full_path = os.path.join(self.directory, name)
-            if os.path.isdir(full_path):
-                shutil.rmtree(full_path)
-            else:
+            if not os.path.isdir(full_path):
                 os.remove(full_path)
         #os.rmdir(input_dir)
         #print(f"Cleaned all contents from {input_dir}")
@@ -258,14 +296,6 @@ class FileManager:
         """List all files saved in the uploads folder."""
         try:
             return sorted(os.listdir(self.directory))
-        except FileNotFoundError:
-            return []
-
-    def list_merged_files(self):
-        """List all files saved in the uploads folder."""
-        try:
-            merged_logs_path = MERGED_LOGS_DIRECTORY
-            return sorted(os.listdir(merged_logs_path), reverse=True)
         except FileNotFoundError:
             return []
         

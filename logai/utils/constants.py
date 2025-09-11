@@ -6,10 +6,16 @@
 #
 #
 from enum import Enum
+import os
 
-UPLOAD_DIRECTORY = "./app_uploaded_files"
-MERGED_LOGS_DIRECTORY = "./app_uploaded_files/merged_logs"
-TELEMETRY_PROFILES = "./app_uploaded_files/telemetry"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+
+UPLOAD_DIRECTORY = os.path.join(BASE_DIR, "user_uploads")
+MERGED_LOGS_DIR_NAME = "merged_logs"
+MERGED_LOGS_ARCHIVE_NAME = "mergedlogs"
+TELEMETRY_PROFILES_DIR_NAME = "telemetry"
+
+LINES_PER_PAGE = 100
 
 DIGITS_SUB = "[DIGITS]"
 TIMESTAMP = "[TIMESTAMP]"

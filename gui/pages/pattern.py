@@ -14,7 +14,8 @@ from .utils import (
     create_upload_file_layout,
     create_file_setting_layout,
     create_param_table,
-    create_run_button
+    create_run_button,
+    create_download_button
 )
 
 
@@ -27,6 +28,7 @@ def create_control_card():
             create_summarization_algo_setting_layout(),
             html.Hr(),
             create_run_button("pattern-btn"),
+            create_download_button("pattern-dwld"),
             create_modal(
                 modal_id="pattern_exception_modal",
                 header="An Exception Occurred",
@@ -76,22 +78,6 @@ def create_timeseries_grapy_layout():
 def create_pattern_layout():
     return dbc.Row(
         [
-            # Left column
-            dbc.Col(
-                html.Div(
-                    [
-                        create_description_card(),
-                        create_control_card(),
-                        html.Div(
-                            ["initial child"],
-                            id="output-clientside",
-                            style={"display": "none"},
-                        ),
-                    ]
-                ),
-                width=2,
-            ),
-            # Right column
             dbc.Col(
                 html.Div(
                     [

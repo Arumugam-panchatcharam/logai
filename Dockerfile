@@ -6,9 +6,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 VOLUME ["/app"]
-#COPY . .
 
-EXPOSE 40601
+EXPOSE 40901
 
-# Gunicorn: 4 workers, binds to 0.0.0.0:40601
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:40601", "logai_wsgi:server"]
+# Gunicorn: 4 workers, binds to 0.0.0.0:40901
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:40901", "logai_wsgi:server"]

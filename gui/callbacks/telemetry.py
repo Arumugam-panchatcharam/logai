@@ -224,13 +224,58 @@ def create_radio_stat_graph_layout(data):
     )
     return chart
 
+def create_process_table(data):
+    df = telemetry_parser.extract_ccsp_mem_split_data()
+    return dash_table.DataTable(
+        id='process-table',
+        columns=[{"name": col, "id": col} for col in df.columns],
+        data=data,
+        page_size=10,
+        style_table={'overflowX': 'auto'},
+        style_header={'fontWeight': 'bold'},
+        style_cell={'textAlign': 'left'},
+    )
+
+# Callback to update table
+@callback(
+    Output("process-table", "children"),
+    Input("process-select", "value"),
+    [
+        State("process-select", "value"),
+    ],
+)
+def update_table(selected_process, sel):
+    ctx = dash.callback_context
+    if ctx.triggered:
+        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        
+        if prop_id == "process-select":
+            if len(selected_process) == 0:
+                return dash_table.DataTable()
+            
+            df = telemetry_parser.extract_ccsp_mem_split_data()
+            filtered_df = df[df['NAME'] == selected_process]
+            #data = filtered_df.sort_values('TimeStamp').to_dict('records')
+            columns = [{"name": col, "id": col} for col in df.columns]
+            return dash_table.DataTable(
+                id='process-table',
+                columns=columns,
+                data=filtered_df.sort_values('TimeStamp').to_dict('records'),
+                page_size=10,
+                style_table={'overflowX': 'auto'},
+                style_header={'fontWeight': 'bold'},
+                style_cell={'textAlign': 'left'},
+                )
+
 @callback(
     Output("dev-summary-card", "children"),
     Output("dev-status-card", "children"),
-    Output("cpu-chart-card", "children"),
-    Output("mem-chart-card", "children"),
-    Output("network-stat-chart-card", "children"),
-    Output("radio-stat-chart-card", "children"),
+    Output("process-select", "options"),
+    Output("process-select", "value"),
+    #Output("cpu-chart-card", "children"),
+    #Output("mem-chart-card", "children"),
+    #Output("network-stat-chart-card", "children"),
+    #Output("radio-stat-chart-card", "children"),
     Output("telemetry_exception_modal", "is_open"),
     Output("telemetry_exception_modal_content", "children"),
     [
@@ -241,30 +286,46 @@ def create_radio_stat_graph_layout(data):
 def click_run(
     btn_click, modal_close
 ):
+    options = []
     ctx = dash.callback_context
     try:
         if ctx.triggered:
             prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
             #print(prop_id)
             if prop_id == "telemetry-btn":
-                filename = "telemetry2_0"
-                config_json = file_manager.load_config(filename)
+                file_manager = FileManager()
+                #filename = "telemetry2_0"
+                #config_json = file_manager.load_config(filename)
                 #print(config_json, flush=True)
+                telemetry_parser.extract_telemetry_reports()
                 telemetry_parser.start_processing()
-                data = telemetry_parser.telemetry_report
-                cpu = create_cpu_graph_layout(data)
+                data = telemetry_parser.get_telemetry_report()
+                #cpu = create_cpu_graph_layout(data)
                 summary = create_summary_layout(data)
                 sts = create_status_layout(data)
 
+                # Tables
+                #ccsp_mem = create_ccsp_mem_split_table(data)
+                #ccsp_mem = dash_table.DataTable()
+                df = telemetry_parser.extract_ccsp_mem_split_data()
+                #print([{'label': name, 'value': name} for name in df['NAME'].unique()])
+                options = [{'label': name, 'value': name} for name in df['NAME'].unique()]
+                value = df['NAME'].unique()[0]
+
+                """
                 mem_graph = create_mem_graph_layout(data)
                 wan_stat = create_wan_graph_layout(data)
                 radio_stat = create_radio_stat_graph_layout(data)
+                """
 
-                return summary, sts, cpu, mem_graph, wan_stat, radio_stat, False, ""
+                return summary, sts, options,value, False, ""
 
             elif prop_id == "pattern_exception_modal_close":
-                return html.Div(),html.Div(),dcc.Graph(),dcc.Graph(),dcc.Graph(), dcc.Graph(), False, ""
+                print("model close")
+                return html.Div([]),html.Div([]), options, "", False, ""
         else:
-            return html.Div(),html.Div(),dcc.Graph(),dcc.Graph(),dcc.Graph(), dcc.Graph(), False, ""
+            print("else model close")
+            return html.Div([]),html.Div([]),options, "", False, ""
     except Exception as error:
-        return html.Div(),html.Div(),dcc.Graph(),dcc.Graph(),dcc.Graph(), dcc.Graph(), True, str(error)
+        print("else model close except")
+        return html.Div([]),html.Div([]), options, "", True, str(error)

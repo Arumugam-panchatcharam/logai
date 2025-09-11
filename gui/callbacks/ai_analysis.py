@@ -1,6 +1,5 @@
 from dash import dash_table
 from dash import Input, Output, callback
-from gui.app_instance import app
 from gui.diagnose_broadband import run_diagnosis
 
 @callback(

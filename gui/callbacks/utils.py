@@ -36,6 +36,7 @@ def upload_file(_, uploaded_filenames, uploaded_file_contents):
             pass
             #print("Prop_id", prop_id, flush=True)
     else:
+        print("process uploaded data")
         pass
         #print("UPload file else case", flush=True)
 
@@ -49,6 +50,36 @@ def upload_file(_, uploaded_filenames, uploaded_file_contents):
     else:
         return options, ""
 
+
+@callback(
+    Output("telemetry-dummy", "children"),
+    [
+        Input("telemetry-upload-data", "filename"), 
+        Input("telemetry-upload-data", "contents")
+     ],
+)
+def telemetry_upload_file(uploaded_filenames, uploaded_file_contents):
+    options = []
+    file_manager = FileManager()
+    ctx = dash.callback_context
+    
+    if ctx.triggered:
+        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if prop_id == "telemetry-upload-data":
+            if uploaded_filenames is not None and uploaded_file_contents is not None:
+                for name, data in zip(uploaded_filenames, uploaded_file_contents):
+                    file_manager.save_file(name, data)
+            
+                file_manager.process_uploaded_files()
+        else:
+            #print("IF process uploaded data")
+            pass
+            #print("Prop_id", prop_id, flush=True)
+    else:
+        pass
+        #print("CTX ELSE process uploaded date")
+    
+    return html.Div()
 
 """
 @callback(

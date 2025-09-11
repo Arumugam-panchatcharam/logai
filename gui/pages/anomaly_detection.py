@@ -116,21 +116,6 @@ def create_display_layout():
 def create_anomaly_detection_layout():
     return dbc.Row(
         [
-            # Left column
-            dbc.Col(
-                html.Div(
-                    [
-                        create_description_card(),
-                        create_control_card(),
-                        html.Div(
-                            ["initial child"],
-                            id="output-clientside",
-                            style={"display": "none"},
-                        ),
-                    ]
-                ),
-                width=2,
-            ),
             dbc.Col(
                 [
                     dbc.Row(

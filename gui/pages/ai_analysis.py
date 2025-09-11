@@ -32,22 +32,6 @@ from .utils import (
 def create_ai_analysis_layout():
     return dbc.Row(
         [
-            # Left column
-            dbc.Col(
-                html.Div(
-                    [
-                        create_description_card(),
-                        #create_control_card(),
-                        html.Div(
-                            ["initial child"],
-                            id="output-clientside",
-                            style={"display": "none"},
-                        ),
-                    ]
-                ),
-                width=2,
-            ),
-            # Right column
             dbc.Col(
                 html.Div(
                     [

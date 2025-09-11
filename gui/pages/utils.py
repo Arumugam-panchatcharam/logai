@@ -54,6 +54,21 @@ def create_run_button(button_id):
                     ),
                 ]
             )
+
+def create_download_button(button_id):
+    return dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            html.Div(
+                            children=[html.Button(id=button_id, children="Download", n_clicks=0)],
+                            style={"textAlign": "center"},
+                            ),
+                        ]
+                    ),
+                ]
+            )
+
 def create_run_button_all(button_id):
     button_id_all = button_id + "-all"
     return dbc.Row(
@@ -207,6 +222,30 @@ def create_upload_file_layout():
         ],
     )
 
+def create_telemetry_upload_file_layout():
+    return html.Div(
+        id="telemetry-upload-file-layout",
+        children=[
+            #html.Br(),
+            html.B("Upload Log File"),
+            dcc.Upload(
+                id="telemetry-upload-data",
+                children=html.Div(["Drag and Drop or Select a File"]),
+                style={
+                    # "width": "300px",
+                    "height": "50px",
+                    "lineHeight": "50px",
+                    "borderWidth": "1px",
+                    "borderStyle": "dashed",
+                    "borderRadius": "5px",
+                    "textAlign": "center",
+                    "margin": "10px",
+                },
+                multiple=True,
+            ),
+        ],
+    )
+
 def create_file_setting_layout():
     return html.Div(
         id="file-setting-layout",
@@ -239,6 +278,25 @@ def create_file_setting_layout():
         # }
     )
 
+
+def create_process_select_layout():
+    return html.Div(
+        id="process-select-layout",
+        children=[
+            html.Br(),
+            html.B("Select Process"),
+            html.Hr(),
+            #dbc.Row(dbc.Col([html.Div(id="custom-file-setting")])),
+            dcc.Dropdown(id="process-select", 
+                         options=["No Process Selected!"],
+                         value="No Process Selected",
+                         style={"width": "100%"}),            
+        ],
+        # style={
+        #     "display": "inline-block",
+        #     "width": "300px",
+        # }
+    )
 
 def create_param_table(params=None, height=100):
     if params is None or len(params) == 0:

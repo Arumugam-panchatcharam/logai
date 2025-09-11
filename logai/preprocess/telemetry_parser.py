@@ -2,10 +2,15 @@ import re
 import os
 import json
 import glob
-from logai.utils.constants import TELEMETRY_PROFILES, MERGED_LOGS_DIRECTORY
 from logai.utils import json_helper
 import pandas as pd
 from enum import Enum
+from logai.utils.constants import (
+    BASE_DIR, 
+    MERGED_LOGS_DIR_NAME,
+    MERGED_LOGS_ARCHIVE_NAME,
+    TELEMETRY_PROFILES_DIR_NAME
+)
 
 class DML(str, Enum):
     TIME = ".Time"
@@ -54,6 +59,10 @@ class DML(str, Enum):
     SSID1_ERROR_SENT = ".wifi_ssid_1_stats_errorssent"
     SSID1_ERROR_RCVD = ".wifi_ssid_1_stats_errorsreceived"
 
+    # Mem usage
+    MESH_MEM_USAGE_SPLIT = ".mesh_memory_usage_split"
+    CCSP_MEM_USAGE_SPLIT = ".ccsp_memory_usage_split"
+
 class Telemetry2Parser:
     """
     Implementation of file data loader, reading log record objects from local files.
@@ -64,32 +73,31 @@ class Telemetry2Parser:
         self.filename = "telemetry2_0"
         self.file_path = None
         self.telemetry_report = pd.DataFrame()
-        self.telemetry_path = TELEMETRY_PROFILES
-
-        if not os.path.exists(self.telemetry_path):
-            os.makedirs(self.telemetry_path, exist_ok=True)
-
-    def _check_telemetry_file(self):
-        for fname in os.listdir(MERGED_LOGS_DIRECTORY):
-            if self.filename in fname:
-                self.file_path = os.path.join(MERGED_LOGS_DIRECTORY, fname)
-                #print("fle path ", self.file_path)
+        self.telemetry_path = None
         
-        if self.file_path is not None and os.path.exists(self.file_path):
-            return True
-        else:
-            return False
-        
-    def extract_telemetry_reports(self):
-
-        if not self._check_telemetry_file():
-            #print("return")
+    def extract_telemetry_reports(self, project_path):
+        if not os.path.exists(project_path):
+            print(f"Merged Logs path '{project_path}' does not exist.")
             return
+        
+        self.telemetry_path = os.path.join(project_path, TELEMETRY_PROFILES_DIR_NAME)
+        os.makedirs(self.telemetry_path, exist_ok=True)
 
         inside_json = False
         open_braces = 0
         json_buffer = ""
         json_blocks = []
+        
+        # Check for telemetry2_0 file
+        merged_logs_path = os.path.join(project_path, MERGED_LOGS_DIR_NAME)
+        for fname in os.listdir(merged_logs_path):
+            if fname.startswith(self.filename):
+                self.file_path = os.path.join(merged_logs_path, fname)
+                break
+        
+        if self.file_path is None or not os.path.isfile(self.file_path):
+            print(f"Telemetry file '{self.filename}' not found in '{merged_logs_path}'.")
+            return
         
         with open(self.file_path, "r") as infile:
             for line in infile:
@@ -116,8 +124,6 @@ class Telemetry2Parser:
                         inside_json = False
                         json_buffer = ""
         
-        #print(f"Found {len(json_blocks)} JSON blocks.")
-        
         for idx, json_str in enumerate(json_blocks, 1):
             # Remove everything after the last closing '}]}' (or '}}'), plus whitespace and percent
             # Prefer to anchor on '}]}' for your Report use case
@@ -130,22 +136,19 @@ class Telemetry2Parser:
             outname = f"Telemetry2_report_{idx}.json"
             out_path = os.path.join(self.telemetry_path, outname)
             with open(out_path, "w", encoding="utf-8") as fout:
-                fout.write(json_str)        
+                fout.write(json_str)
 
     def get_timestamp(self):
         data = self.telemetry_report
+        timestamp = pd.DataFrame()
 
         if data.empty:
             return False
         
-        col_time = DML.TIME
-        matching_columns = [col for col in data.columns if col_time.lower() in col.lower()]
-        
-        timestamp = pd.to_datetime(
-                                    self.telemetry_report[matching_columns[0]],
-                                    format="%Y-%m-%d %H:%M:%S",
-                                )
-        #print("TimeStamp", timestamp)
+        for col in data.columns:
+            if col.endswith(DML.TIME):
+                timestamp = self.telemetry_report[col]
+
         return timestamp
     
     def get_column_name(self, value):
@@ -155,7 +158,7 @@ class Telemetry2Parser:
             print("Telemetry Report Empty!")
             return None
         else:
-            matching_columns = [col for col in data.columns if value.lower() in col.lower()]
+            matching_columns = [col for col in data.columns if col.endswith(value)]
             return matching_columns[0]
 
     def get_telemetry_col(self,value):
@@ -165,7 +168,7 @@ class Telemetry2Parser:
             print("Telemetry Report Empty!")
             return None
         else:
-            matching_columns = [col for col in data.columns if value.lower() in col.lower()]
+            matching_columns = [col for col in data.columns if col.endswith(value)]
             if len(matching_columns):
                 return data[matching_columns[0]]
             else:
@@ -179,29 +182,82 @@ class Telemetry2Parser:
             print("Telemetry Report Empty!")
             return None
         else:
-            matching_columns = [col for col in data.columns if value.lower() in col.lower()]
+            matching_columns = [col for col in data.columns if col.endswith(value)]
             #print(matching_columns)
             if len(matching_columns):
-                time_col = self.get_column_name(DML.TIME)
-                latest = data.sort_values(time_col).iloc[-1]
+                latest = data.iloc[-1]
                 return latest[matching_columns[index]]
             else:
                 print("Column not Found!", value)
                 return None
+    
+    def _key_value_split(self, raw_data, timestamp):
+        process_entries = raw_data.strip().split(';')
+        parsed_data = []
+        
+        for entry in process_entries:
+            entry = entry.strip()
+            if not entry:
+                continue
+            fields = entry.split('|')
+            data = {}
+            for field in fields:
+                key, value = field.split('=')
+                data[key.strip()] = value.strip()
+                data['TimeStamp'] = timestamp
+            parsed_data.append(data)
+        
+        df = pd.DataFrame(parsed_data)
+        return df
+    
+    def extract_ccsp_mem_split_data(self, data=pd.DataFrame()):
+        data = self.telemetry_report
+        result_df = pd.DataFrame()
+        if data.empty:
+            return result_df
+
+        time = self.get_timestamp()
+        ccsp_mem_usage_raw = self.get_telemetry_col(DML.CCSP_MEM_USAGE_SPLIT)
+        
+        result_df = pd.DataFrame()
+        for process_data, t in zip(ccsp_mem_usage_raw, time):
+            if pd.isna(process_data):
+                continue
+            parsed_data = self._key_value_split(process_data, t)
+            result_df = pd.concat([result_df, parsed_data], ignore_index=True)
+
+        return result_df
 
     def start_processing(self):
         telemetry_report = pd.DataFrame()
 
         DATA_LIST = []
         # ---------- Load & prep once at start (or via Upload component) ----------
-        for fname in glob.glob(TELEMETRY_PROFILES + "/*.json"):
+        for fname in glob.glob(self.telemetry_path + "/*.json"):
             RAW = json_helper.load_json(fname)
             if RAW is not None:
                 data = json_helper.json_to_df(RAW)
+                for col in data.columns:
+                    if col.endswith(DML.TIME):
+                        data[col] = pd.to_datetime(
+                                    data[col],
+                                    format="%Y-%m-%d %H:%M:%S",
+                                )
+                        #print("DataTime", data[col])
+                        break
                 DATA_LIST.append(data)
 
-        telemetry_report = pd.concat(DATA_LIST)
-        excel_path = os.path.join(TELEMETRY_PROFILES, "Telemetry2_report.xlsx")
+        if len(DATA_LIST) == 0:
+            return
+        
+        combined_df = pd.concat(DATA_LIST, ignore_index=True)
+
+        for col in combined_df.columns:
+            if col.endswith(DML.TIME):
+                telemetry_report = combined_df.sort_values(by=col, axis=0, ignore_index=True)
+                break
+
+        excel_path = os.path.join(self.telemetry_path, "Telemetry2_report.xlsx")
         try:
             with pd.ExcelWriter(excel_path) as writer:
                 telemetry_report.to_excel(writer)
@@ -211,5 +267,5 @@ class Telemetry2Parser:
         #print(telemetry_report.columns)
         self.telemetry_report = telemetry_report
 
-    def telemetry_report(self):
+    def get_telemetry_report(self):
         return self.telemetry_report

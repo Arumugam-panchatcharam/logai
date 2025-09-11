@@ -113,19 +113,6 @@ def create_clustering_layout():
         [
             dbc.Col(
                 [
-                    # Left column
-                    create_description_card(),
-                    create_control_card(),
-                    html.Div(
-                        ["initial child"],
-                        id="clustering-output-clientside",
-                        style={"display": "none"},
-                    ),
-                ],
-                width=2,
-            ),
-            dbc.Col(
-                [
                     dbc.Row(
                         [
                             dbc.Col(
