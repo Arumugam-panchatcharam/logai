@@ -252,7 +252,13 @@ class DBManager:
     def get_project_files(self, project_id: str):
         #print("Getting files for project:", project_id)
         #print(self.db.session.query(self.ProjectFile).filter_by(project_id=project_id).all())
-        return self.db.session.query(self.ProjectFile).filter_by(project_id=project_id).all()
+        files = (
+            self.db.session.query(self.ProjectFile)
+            .filter_by(project_id=project_id)
+            .order_by(func.lower(self.ProjectFile.original_name))
+            .all()
+            )
+        return files
     
     def get_project_file_info(self, project_id:str, filename: str) -> Optional[Any]:
         return self.db.session.query(self.ProjectFile).filter_by(project_id=project_id, filename=filename).first()

@@ -76,7 +76,7 @@ app.layout = dbc.Container([
     dcc.Store(id='current-file-store'),
     dcc.Store(id='current-page-store', data=1),
     dcc.Store(id='pagination-trigger-store'),
-    dcc.Interval(id='auto-save-timer', interval=5000, disabled=False), # Auto-save every 5 seconds
+    dcc.Store(id="scroll-target", data=None),
 
     html.Div(id="page-content", style={"min-height": "100vh"}),
 ], fluid=True, className="p-0")
@@ -529,7 +529,6 @@ def display_page(pathname, session_data, project_data):
     Output("workspace-content", "children"),
     Input("url", "pathname"),
     State("current-project-store", "data"),
-    prevent_initial_call=True
 )
 def update_workspace_content(pathname, project_data):
     if not pathname.startswith("/workspace/"):

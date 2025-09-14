@@ -40,16 +40,19 @@ class TextHighlighter:
         
         result_components = []
         for line_idx, line in enumerate(text_lines):
-            if not line.strip():
-                result_components.extend([line, html.Br()])
+            clean_line = line.rstrip("\r\n")  # remove newlines
+
+            if not clean_line:  # empty line
+                result_components.append(html.Br())
                 continue
-            
-            highlighted_line = self._highlight_single_line(line)
+
+            highlighted_line = self._highlight_single_line(clean_line)
             result_components.extend(highlighted_line)
-            
+
+            # Only add <br> if it's not the last line
             if line_idx < len(text_lines) - 1:
                 result_components.append(html.Br())
-        
+    
         return result_components
     
     def _highlight_single_line(self, line):
