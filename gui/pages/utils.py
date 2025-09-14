@@ -47,7 +47,10 @@ def create_run_button(button_id):
                     dbc.Col(
                         [
                             html.Div(
-                            children=[html.Button(id=button_id, children="Run", n_clicks=0)],
+                                children=[
+                                    dbc.Button([html.I(className="fas fa-bar-chart me-2"),"Run"], id=button_id, color="primary", outline=True)
+                                ],
+                            #children=[html.Button(id=button_id, children="Run", n_clicks=0)],
                             style={"textAlign": "center"},
                             ),
                         ]
@@ -91,7 +94,9 @@ def create_cluster_run_button(button_id):
                     dbc.Col(
                         [
                             html.Div(
-                            children=[html.Button(id=button_id, children="Run", n_clicks=0)],
+                            children=[
+                                    dbc.Button([html.I(className="fas fa-bar-chart me-2"),"Run"], id=button_id, color="primary", outline=True)
+                                ],
                             style={"textAlign": "center"},
                             ),
                         ]
@@ -99,7 +104,9 @@ def create_cluster_run_button(button_id):
                     dbc.Col(
                         [
                             html.Div(
-                            children=[html.Button(id=button_id_all, children="Run-All", n_clicks=0)],
+                            children=[
+                                    dbc.Button([html.I(className="fas fa-bar-chart me-2"),"Run All"], id=button_id_all, color="primary", outline=True)
+                                ],
                             style={"textAlign": "center"},
                             ),
                         ]
@@ -250,11 +257,14 @@ def create_file_setting_layout():
     return html.Div(
         id="file-setting-layout",
         children=[
-            html.Br(),
-            html.B("File Settings"),
-            html.Hr(),
-            dbc.Row(dbc.Col([html.Div(id="custom-file-setting")])),
+            #html.Br(),
+            #html.B("File Settings"),
+            #html.Hr(),
+            #dbc.Row(dbc.Col([html.Div(id="custom-file-setting")])),
             html.Label("Log File"),
+            dbc.Button([html.I(className="fas fa-sync-alt")], 
+                                                         id="refresh-filelist-icon", color="outline-secondary", size="sm", 
+                                                         title="Log Files"),
             dcc.Dropdown(id="file-select", 
                          options=["No File Selected!"],
                          value="No File Selected",
@@ -270,7 +280,7 @@ def create_file_setting_layout():
                 value=0,
                 id="time-interval",
             ),
-            html.Hr(),
+            #html.Hr(),
         ],
         # style={
         #     "display": "inline-block",

@@ -22,10 +22,10 @@ def create_control_card():
     return html.Div(
         id="control-card",
         children=[
-            create_upload_file_layout(),
+            #create_upload_file_layout(),
             create_file_setting_layout(),
             create_ad_algo_setting_layout(),
-            html.Hr(),
+            #html.Hr(),
             create_run_button("anomaly-btn"),
             create_modal(
                 modal_id="anomaly_exception_modal",
@@ -66,6 +66,7 @@ def create_ad_algo_setting_layout():
             ),
             html.Div(id="ad-param-table", children=[create_param_table()]),
         ],
+        style={"visibility": "hidden"},
     )
 
 
@@ -121,6 +122,10 @@ def create_anomaly_detection_layout():
                     dbc.Row(
                         [
                             dbc.Col(
+                                create_control_card(),
+                                width=4,
+                            ),
+                            dbc.Col(
                                 dbc.Card(
                                     dbc.CardBody(
                                         [
@@ -142,7 +147,7 @@ def create_anomaly_detection_layout():
                                         ]
                                     )
                                 ),
-                                width=8,
+                                width=4,
                             ),
                         ]
                     ),
@@ -152,5 +157,12 @@ def create_anomaly_detection_layout():
         ],
     )
 
+def anomaly_detection_page():
+    return html.Div(
+        style={"height": "100vh", "overflowY": "auto", "padding": "15px"},
+        children=[
+            create_anomaly_detection_layout(),
+        ],
+    )
 
-layout = create_anomaly_detection_layout()
+layout = anomaly_detection_page()

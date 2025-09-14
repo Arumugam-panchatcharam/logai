@@ -23,12 +23,12 @@ def create_control_card():
     return html.Div(
         id="control-card",
         children=[
-            create_upload_file_layout(),
+            #create_upload_file_layout(),
             create_file_setting_layout(),
-            create_summarization_algo_setting_layout(),
+            #create_summarization_algo_setting_layout(),
             html.Hr(),
             create_run_button("pattern-btn"),
-            create_download_button("pattern-dwld"),
+            #create_download_button("pattern-dwld"),
             create_modal(
                 modal_id="pattern_exception_modal",
                 header="An Exception Occurred",
@@ -84,6 +84,10 @@ def create_pattern_layout():
                         dbc.Row(
                             [
                                 dbc.Col(
+                                    create_control_card(),
+                                    width=4,
+                                ),
+                                dbc.Col(
                                     dbc.Card(
                                         dbc.CardBody(
                                             [
@@ -105,7 +109,7 @@ def create_pattern_layout():
                                             ]
                                         )
                                     ),
-                                    width=8,
+                                    width=4,
                                 ),
                             ]
                         ),
@@ -194,5 +198,11 @@ def create_pattern_layout():
         ]
     )
 
-
-layout = create_pattern_layout()
+def pattern_page():
+    return html.Div(
+        style={"height": "100vh", "overflowY": "auto", "padding": "15px"},
+        children=[
+            create_pattern_layout(),
+        ]
+    )
+layout = pattern_page()

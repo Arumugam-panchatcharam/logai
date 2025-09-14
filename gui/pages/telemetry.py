@@ -21,9 +21,9 @@ def create_control_card():
     return html.Div(
         id="control-card",
         children=[
-            create_telemetry_upload_file_layout(),
+            #create_telemetry_upload_file_layout(),
             #create_file_setting_layout(),
-            html.Hr(),
+            #html.Hr(),
             create_run_button("telemetry-btn"),
             create_modal(
                 modal_id="telemetry_exception_modal",
@@ -57,6 +57,10 @@ def create_telemetry_layout():
                         html.Hr(),
                         dbc.Row(
                             [
+                                dbc.Col(
+                                    create_control_card(),
+                                    width=4,
+                                ),
                                 dbc.Col(dbc.Card([
                                     dbc.CardHeader("Device Info"),
                                     dbc.CardBody(id="dev-summary-card", children=html.Div("Click 'Run' to load summary."))
@@ -95,8 +99,15 @@ def create_telemetry_layout():
         ]
     )
 
+def telemetry_page():
+    return html.Div(
+        style={"height": "100vh", "overflowY": "auto", "padding": "15px"},
+        children=[
+            create_telemetry_layout(),
+        ],
+    )
 
-layout = create_telemetry_layout()
+layout = telemetry_page()
 
 """
 dbc.Row([

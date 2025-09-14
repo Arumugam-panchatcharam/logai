@@ -9,47 +9,34 @@ import dash_bootstrap_components as dbc
 import dash
 from dash import html, Input, Output, State, callback, dash_table
 from gui.file_manager import FileManager
+from gui.app_instance import dbm
 
 @callback(
     Output("file-select", "options"),
     Output("file-select", "value"),
     [
-        Input('restore-dropdown-value', 'children'),
-        Input("upload-data", "filename"), 
-        Input("upload-data", "contents")
+        Input("refresh-filelist-icon", "n_clicks"),
+        Input("current-project-store", "data"),
      ],
 )
-def upload_file(_, uploaded_filenames, uploaded_file_contents):
-    options = []
-    file_manager = FileManager()
-    ctx = dash.callback_context
+def update_file_list(n_clicks, project_data):
+    if not project_data or not project_data.get("project_id"):
+        return [], ""
     
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "upload-data":
-            if uploaded_filenames is not None and uploaded_file_contents is not None:
-                for name, data in zip(uploaded_filenames, uploaded_file_contents):
-                    file_manager.save_file(name, data)
-            
-                file_manager.process_uploaded_files()
-        else:
-            pass
-            #print("Prop_id", prop_id, flush=True)
-    else:
-        print("process uploaded data")
-        pass
-        #print("UPload file else case", flush=True)
+    project_id = project_data["project_id"]
+    files = dbm.get_project_files(project_id)
 
-    files = file_manager.list_merged_files()
-
-    for filename in files:
-        options.append({"label": filename, "value": filename})
+    options = []
+    for filename, _, original_name, file_size, _ in files:
+        options.append({
+            "label": f"{original_name} ({round(file_size / (1024*1024), 2)} MB)",
+            "value": filename
+        })
 
     if len(options) > 0:
         return options, options[0]["label"]
     else:
         return options, ""
-
 
 @callback(
     Output("telemetry-dummy", "children"),

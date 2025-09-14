@@ -10,7 +10,7 @@ import os
 
 import dash
 import pandas as pd
-from dash import html, Input, Output, State, callback, dash_table
+from dash import ctx, html, Input, Output, State, callback, dash_table
 import plotly.express as px
 
 from gui.demo.log_pattern import LogPattern
@@ -27,6 +27,7 @@ from logai.preprocess.preprocessor import PreprocessorConfig
 
 from logai.utils import constants
 from ..pages.utils import create_param_table
+from gui.app_instance import dbm
 
 log_anomaly_demo = LogAnomaly()
 
@@ -82,6 +83,7 @@ def create_attribute_component(attributes):
         #State("log-type-select", "value"),
         #State("attribute-name-options", "value"),
         State("file-select", "value"),
+        State("current-project-store", "data"),
         #State("parsing-algo-select", "value"),
         #State("vectorization-algo-select", "value"),
         #State("categorical-encoder-select", "value"),
@@ -90,6 +92,7 @@ def create_attribute_component(attributes):
         State("ad-param-table", "children"),
         #State("ad-parsing-param-table", "children"),
     ],
+    prevent_initial_call=True,
 )
 def click_run(
     btn_click,
@@ -97,6 +100,7 @@ def click_run(
     #log_type,
     #attributes,
     filename,
+    project_data,
     #parsing_algo,
     #vectorization_algo,
     #categorical_encoder,
@@ -105,7 +109,12 @@ def click_run(
     ad_param_table,
     #parsing_param_table,
 ):
-    ctx = dash.callback_context
+    if not project_data or not project_data.get("project_id"):
+        return html.Div(), True, "Please select a project and upload a log file."
+    project_id = project_data["project_id"]
+    user_id = project_data.get("user_id")
+    file_name, file_path, original_name, file_size, _ = dbm.get_project_file_info(project_id, filename)
+
     if ctx.triggered:
         prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if prop_id == "anomaly-btn":
@@ -123,13 +132,11 @@ def click_run(
                 )
 
                 file_manager = FileManager()
-                config_json = file_manager.load_config(filename)
+                config_json = file_manager.load_config(original_name)
                 #print(config_json, flush=True)
                 if config_json is not None:
                     config = WorkFlowConfig.from_dict(config_json)
                     #print(config, flush=True)
-
-                file_path = os.path.join(file_manager.merged_logs_path, filename)
 
                 config.data_loader_config.filepath = file_path
 

@@ -22,10 +22,10 @@ def create_control_card():
     return html.Div(
         id="control-card",
         children=[
-            create_upload_file_layout(),
+            #create_upload_file_layout(),
             create_file_setting_layout(),
             #create_clustering_algo_setting_layout(),
-            html.Hr(),
+            #html.Hr(),
             create_cluster_run_button("clustering-btn"),
             create_modal(
                 modal_id="clustering_exception_modal",
@@ -116,6 +116,10 @@ def create_clustering_layout():
                     dbc.Row(
                         [
                             dbc.Col(
+                                create_control_card(),
+                                width=4,
+                            ),
+                            dbc.Col(
                                 dbc.Card(
                                     dbc.CardBody(
                                         [
@@ -137,7 +141,7 @@ def create_clustering_layout():
                                         ]
                                     )
                                 ),
-                                width=8,
+                                width=4,
                             ),
                         ]
                     ),
@@ -186,5 +190,12 @@ def create_clustering_layout():
         ],
     )
 
+def clustering_page():
+    return html.Div(
+        style={"height": "100vh", "overflowY": "auto", "padding": "15px"},
+        children=[
+            create_clustering_layout(),
+        ]
+    )
 
-layout = create_clustering_layout()
+layout = clustering_page()

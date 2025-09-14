@@ -12,9 +12,10 @@ import pandas as pd
 import plotly.express as px
 from drain3 import TemplateMiner
 from drain3.template_miner_config import TemplateMinerConfig
-from dash import html, Input, Output, State, callback, dash_table
+from dash import ctx, html, Input, Output, State, callback, dash_table
 from flask import send_from_directory
 from logai.utils.constants import UPLOAD_DIRECTORY
+from gui.app_instance import dbm
 
 from logai.applications.application_interfaces import (
     WorkFlowConfig,
@@ -139,23 +140,29 @@ def click_download(
     Output("pattern_exception_modal_content", "children"),
     [
         Input("pattern-btn", "n_clicks"),
-        Input("pattern-dwld", "n_clicks"),
         Input("pattern_exception_modal_close", "n_clicks"),
     ],
     [
         State("file-select", "value"),
+        State("current-project-store", "data"),
     ],
+    prevent_initial_call=True,
 )
 def click_run(
-    ptrn_btn_click, dwld_btn_click, modal_close, filename
+    ptrn_btn_click, modal_close, filename, project_data
 ):
-    ctx = dash.callback_context
+    if not project_data or not project_data.get("project_id"):
+        return html.Div(), False, ""
+    
+    project_id = project_data["project_id"]
+    user_id = project_data.get("user_id")
+    filename, file_path, original_name, file_size, _ = dbm.get_project_file_info(project_id, filename)
     try:
         if ctx.triggered:
             prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
             if prop_id == "pattern-btn":
                 file_manager = FileManager()
-                config_json = file_manager.load_config(filename)
+                config_json = file_manager.load_config(original_name)
                 #print(config_json, flush=True)
                 if config_json is not None:
                     # in log summarization disable parsing clustering and anomaly detection
@@ -163,10 +170,9 @@ def click_run(
                     config_json['clustering_config'] = None
                     config = WorkFlowConfig.from_dict(config_json)
                     #print(config, flush=True)
-
-                file_path = os.path.join(file_manager.merged_logs_path, filename)
+                
                 if not os.path.getsize(file_path):
-                    raise RuntimeError("File Lenght is Zero!")
+                    raise RuntimeError("File Length is Zero!")
                 
                 config.data_loader_config.filepath = file_path
                 log_pattern_demo.execute_auto_parsing(config)
@@ -178,15 +184,6 @@ def click_run(
                     False,
                     "",
                 )
-            elif prop_id == "pattern-dwld":
-                file_manager = FileManager()
-                file_manager.download_file()
-                send_from_directory(
-                    directory=UPLOAD_DIRECTORY,
-                    path=os.path.join(UPLOAD_DIRECTORY, "mergedlogs.zip"),
-                    as_attachment=True,
-                )
-                return html.Div(), False, ""
             elif prop_id == "pattern_exception_modal_close":
                 return html.Div(), False, ""
         else:
