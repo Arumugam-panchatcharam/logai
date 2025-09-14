@@ -36,7 +36,7 @@ CODE_STYLE = {
     'border-radius': '8px',
     'font-family': 'monospace',
     'font-size': '10px',
-    'height': '600px',
+    'height': '800px',
     'overflow-y': 'auto',
     'white-space': 'pre-wrap'
 }
@@ -48,7 +48,7 @@ SEARCH_STYLE = {
     'border-radius': '8px',
     'font-family': 'monospace',
     'font-size': '9px',
-    'height': '300px',
+    'height': '400px',
     'overflow-y': 'auto',
     'white-space': 'pre-wrap'
 }

@@ -201,11 +201,12 @@ def reset_page_data():
     prevent_initial_call=True
 )
 def view_file(n_clicks_list, project_data):
+    select_file = dbc.Alert("Select A File to View", color="warning")
     if not any(n_clicks_list):
-        return "Select a file to view", "", None, 1, dash.no_update
+        return select_file, "", None, 1, dash.no_update
     
     if not project_data or not project_data.get("project_id"):
-        return "Select a file to view", "", None, 1, dash.no_update
+        return select_file, "", None, 1, dash.no_update
     
     project_id = project_data["project_id"]
     user_id = project_data.get("user_id")
@@ -234,7 +235,12 @@ def view_file(n_clicks_list, project_data):
         if file_data:
             # Content (Page 1)
             page_content, _ = get_page_content(file_data, 1)
-            content = html.Pre(''.join(page_content['lines']), style=CODE_STYLE)
+            if page_content:
+                highlighted_content = highlight_components(
+                    page_content['lines'],
+                    page_number=1,
+                    start_line=page_content['start_line']
+                    )
             # Pagination
             if file_data['total_pages'] > 1:
                 pagination = html.Div([
@@ -256,9 +262,9 @@ def view_file(n_clicks_list, project_data):
                     html.P("Single page file", className="text-center small text-muted", id="page-info")
                 ])
             
-            return content, pagination, file_name, 1, reset_page_data()
+            return highlighted_content, pagination, file_name, 1, reset_page_data()
     
-    return "Select a file to view", "", None, 1, dash.no_update
+    return select_file, "", None, 1, dash.no_update
 
 # PAGINATION CALLBACK - Now works with suppress_callback_exceptions=True
 @callback(
@@ -366,7 +372,6 @@ def update_file_content(pagination_data, file_name, project_data):
     return dash.no_update, dash.no_update, dash.no_update
 
 def search_file(filepath, pattern):
-    no_matches = html.Div("No matches found", style={"color": "gray", "font-style": "italic"})
     highlighter = TextHighlighter()
     matches = []
     try:
@@ -439,7 +444,7 @@ def handle_search(search_clicks, error_clicks, warn_clicks, ip_clicks, time_clic
 
     return html.Div([
         html.H6(f"Found {len(matches)} matches"),
-        html.Div(matches, style={'max-height': '300px', 'overflow-y': 'auto'})
+        html.Div(matches, style={'max-height': '400px', 'overflow-y': 'auto'})
     ]), search_pattern
 
 # SAVE NOTES
